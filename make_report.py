@@ -157,7 +157,7 @@ r.font.color.rgb = RGBColor(0x1E, 0x3A, 0x8A)
 para("From weather data to a flood response plan for Pakistan, with quantum risk estimation and optimisation in Qiskit",
      size=13, align=WD_ALIGN_PARAGRAPH.CENTER)
 para("Qiskit Fall Fest 2026 Hackathon  |  Domain: Disaster Response", size=10, align=WD_ALIGN_PARAGRAPH.CENTER)
-para("Team: [team name]  |  Members: [names]  |  Repository: [GitHub link]  |  Video: [Drive link]",
+para("Team: PowerPuff Boys  |  Members: M Fahad Afridi (team lead), Sarfaraz Ahmed, Asad Kidwai  |  Repository: https://github.com/1WhiteDeath1/baadal  |  Video: [Drive link]",
      size=9.5, italic=True, align=WD_ALIGN_PARAGRAPH.CENTER)
 
 doc.add_heading("Summary", 1)
