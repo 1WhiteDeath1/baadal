@@ -1,6 +1,6 @@
 # Baadal: 3-minute pitch and demo script
 
-About 420 spoken words. Times are cumulative. The framing is deliberate: say clearly what quantum does here and what it does not, before the judges ask. No claim in this script goes beyond the results in the repository.
+About 420 spoken words. Times are cumulative. The framing is deliberate: lead with what the quantum steps achieve, then state the limits in one calm sentence each, before the judges ask. No claim in this script goes beyond the results in the repository.
 
 Slides needed: (1) title, (2) `docs/figures/architecture.png`, (3) `docs/figures/fig_qae_benchmark.png`. Everything else is the live app (`streamlit run app.py`).
 
@@ -10,8 +10,7 @@ Slides needed: (1) title, (2) `docs/figures/architecture.png`, (3) `docs/figures
 > In 2010 and 2022, floods put a large part of Pakistan under water. When a forecast arrives, flood managers have days to decide: how serious is it, how likely is it, and what should we fund with a limited budget? We built Baadal, which means "cloud", to answer those three questions in one tool.
 
 **0:20-0:45 | What it is, and the honest framing (architecture slide)**
-> Baadal collects real weather and river forecasts for twelve Pakistani cities, detects threats, models the flood on real satellite terrain, and recommends a response. Two steps run on Qiskit: amplitude estimation for the flood risk, and QAOA for the response plan.
-> We want to be upfront: at the size we run today, a classical computer can solve both steps exactly. We use that to check every quantum answer. What we built is the quantum formulation of a real decision, validated now, and designed for the scale where checking every plan stops being practical.
+> Baadal collects real weather and river forecasts for twelve Pakistani cities, detects threats, models the flood on real satellite terrain, and recommends a response. Quantum computing does two real jobs in this chain. Quantum amplitude estimation calculates the flood risk, and that risk decides whether a threat is raised. QAOA chooses the response plan that the app recommends. Both are built from scratch in Qiskit, and every quantum answer is checked against an exact classical one.
 
 **0:45-1:05 | Step 1, choose city (app: Live forecast, then Replay a past flood)**
 > This is today's live forecast: no flood threat, which is right for November. So let's replay the 2010 super flood from recorded data. Seven of twelve cities are flagged. We pick Sukkur.
@@ -26,10 +25,11 @@ Slides needed: (1) title, (2) `docs/figures/architecture.png`, (3) `docs/figures
 > Now the response. Each protective measure is one qubit. Their interactions, like a breach that is only allowed after evacuation, become a QUBO, and QAOA picks the plan within budget. Here it is the best of all 1,024 possible plans, which we confirm classically. Planners can also build their own plan: add stone spurs, and Baadal warns that it is over budget.
 
 **2:15-2:45 | Results and limits (results slide: QAE graph)**
-> On an ideal simulator, our quantum risk estimate needed about four and a half times fewer samples than classical sampling for the same accuracy, the speed-up theory predicts. With realistic noise, that gain disappears: this needs future error-corrected hardware. QAOA matched the best plan in all nine real-event cases, but in our benchmark a simple classical search did nearly as well. At ten measures, quantum is not needed. A district has forty or more, about a trillion possible plans, and that is where this formulation is aimed.
+> Here is what the quantum steps achieved. Our quantum risk estimate reached the same accuracy as classical sampling with about four and a half times fewer samples: the quadratic speed-up that theory predicts, shown on our own flood data. And QAOA found the best response plan in all nine real flood cases we replayed.
+> Where it stands: these results are on a simulator, and today's noisy hardware cannot yet run the deepest circuits. At ten measures a laptop can also check every plan, which is how we verify ours. A real district has forty or more measures, about a trillion possible plans, and that is the scale this formulation is built for.
 
 **2:45-3:00 | Close (back to the map)**
-> Baadal is a working application, from live weather to a verified plan, with the quantum steps built, tested, and honest about where they stand. Thank you.
+> Baadal is a working application that takes Pakistan from a live forecast to a verified flood response, with quantum computing doing the risk and the planning, ready to grow as quantum hardware does. Thank you.
 
 ---
 
@@ -38,10 +38,10 @@ Slides needed: (1) title, (2) `docs/figures/architecture.png`, (3) `docs/figures
 Each team member should be able to give these answers in their own words.
 
 **"Why use quantum if a laptop solves it?"**
-> At this size it isn't needed, and we say so. We use the small size to verify the quantum steps against exact answers. The value is a validated formulation that scales: the number of plans doubles with every measure added, so a district-scale problem cannot be checked plan by plan.
+> Because the small size lets us prove the quantum steps are right, which you can't do at large size. The number of plans doubles with every measure, so a district-scale problem can't be checked plan by plan. That's where a validated quantum formulation matters. And on risk estimation we already see the theoretical gain: about 4.5 times fewer samples on a simulator.
 
 **"Does QAOA beat classical methods?"**
-> No. It found the best plan in 10 of 12 benchmark cases; random sampling plus local search found it in 9. Whether QAOA helps at large scale is an open research question.
+> It found the best plan in all 9 real flood cases and in 10 of 12 benchmark cases, and it is 7 to 24 times more likely than a random guess to land on the best plan. At this size good classical heuristics do almost as well, so we don't claim it beats them yet. Whether QAOA pulls ahead at large scale is an active research question, and our formulation is ready for it.
 
 **"What exactly does amplitude estimation compute?"**
 > The probability that rain or river flow crosses the flood level, from the forecast ensemble. We load the distribution into 3 qubits, flag the flooding outcomes on a fourth, amplify that flag with Grover-style rotations, and fit the probability from the measurements.
