@@ -1,0 +1,371 @@
+{
+  "id": "riverine_punjab",
+  "name": "Riverine flood - Punjab (Chenab-style river reach)",
+  "description": "A synthetic 10 km x 10 km reach of a Punjab river with a barrage, a district town on the left bank, kharif farmland and villages on the right bank, and a pre-designated breaching section. Inspired by the measures used in Pakistan's 2010, 2022 and 2025 floods. ALL NUMBERS ARE ILLUSTRATIVE, not calibrated to any real site.",
+  "currency": "PKR million",
+  "cost_unit_pkr_m": 20,
+  "people_weight_pkr_m_per_person": 0.05,
+  "budgets_pkr_m": [
+    100,
+    160,
+    220,
+    280,
+    340,
+    400
+  ],
+  "default_scenario": "exceptional",
+  "terrain": {
+    "rows": 40,
+    "cols": 40,
+    "cell_m": 250,
+    "seed": 7,
+    "base_elev_m": 200.0,
+    "downstream_slope_m_per_cell": 0.06,
+    "lateral_slope_m_per_cell": 0.22,
+    "river_col": 20.0,
+    "meander_amp_cells": 2.5,
+    "meander_period_cells": 30.0,
+    "channel_halfwidth_cells": 1,
+    "channel_depth_m": 3.0,
+    "noise_amp_m": 0.6,
+    "noise_smooth_cells": 2.5
+  },
+  "rating_curve": {
+    "comment": "River stage above channel bed h = a * (Q / q_ref)^b. Illustrative, not a real gauge.",
+    "a_m": 1.25,
+    "b": 0.6,
+    "q_ref_cusecs": 100000
+  },
+  "scenarios": [
+    {
+      "id": "medium",
+      "name": "Medium flood (forecast)",
+      "peak_inflow_cusecs": 300000,
+      "rain_72h_mm": 60
+    },
+    {
+      "id": "high",
+      "name": "High flood (forecast)",
+      "peak_inflow_cusecs": 500000,
+      "rain_72h_mm": 110
+    },
+    {
+      "id": "very_high",
+      "name": "Very high flood (forecast)",
+      "peak_inflow_cusecs": 700000,
+      "rain_72h_mm": 170
+    },
+    {
+      "id": "exceptional",
+      "name": "Exceptionally high flood (forecast)",
+      "peak_inflow_cusecs": 900000,
+      "rain_72h_mm": 240
+    }
+  ],
+  "zones": [
+    {
+      "id": "village_n",
+      "name": "Upstream villages (left bank)",
+      "rect": [
+        2,
+        9,
+        8,
+        17
+      ],
+      "landuse": "residential",
+      "asset_pkr_m_per_cell": 8,
+      "people_per_cell": 120,
+      "mound_m": 0.4,
+      "drain_capacity_mm": 80,
+      "pluvial_factor": 1.5
+    },
+    {
+      "id": "town",
+      "name": "District town (left bank)",
+      "rect": [
+        12,
+        21,
+        6,
+        17
+      ],
+      "landuse": "residential",
+      "asset_pkr_m_per_cell": 30,
+      "people_per_cell": 200,
+      "mound_m": 0.8,
+      "drain_capacity_mm": 60,
+      "pluvial_factor": 4.0
+    },
+    {
+      "id": "headworks",
+      "name": "Barrage and headworks",
+      "rect": [
+        23,
+        26,
+        13,
+        28
+      ],
+      "landuse": "infrastructure",
+      "asset_pkr_m_per_cell": 60,
+      "people_per_cell": 5,
+      "mound_m": 0.5,
+      "drain_capacity_mm": 100,
+      "pluvial_factor": 0.0
+    },
+    {
+      "id": "farmland",
+      "name": "Kharif farmland (right bank)",
+      "rect": [
+        10,
+        22,
+        25,
+        37
+      ],
+      "landuse": "agriculture",
+      "asset_pkr_m_per_cell": 3,
+      "people_per_cell": 10,
+      "mound_m": 0.0,
+      "drain_capacity_mm": 100,
+      "pluvial_factor": 1.0
+    },
+    {
+      "id": "village_s",
+      "name": "Downstream villages (right bank)",
+      "rect": [
+        28,
+        36,
+        23,
+        33
+      ],
+      "landuse": "residential",
+      "asset_pkr_m_per_cell": 8,
+      "people_per_cell": 150,
+      "mound_m": 0.2,
+      "drain_capacity_mm": 80,
+      "pluvial_factor": 1.5
+    }
+  ],
+  "interventions": [
+    {
+      "id": "EMB_TOWN",
+      "name": "Raise and strengthen town embankment",
+      "category": "Structural (embankment)",
+      "cost_pkr_m": 120,
+      "location": [
+        16,
+        17
+      ],
+      "damage_reduction": {
+        "town": 0.3
+      },
+      "people_reduction": {
+        "town": 0.25
+      },
+      "description": "Raise the left-bank flood embankment protecting the district town (FFC-style embankment work)."
+    },
+    {
+      "id": "SPURS",
+      "name": "Stone spurs at erosion bend",
+      "category": "Structural (river training)",
+      "cost_pkr_m": 60,
+      "location": [
+        10,
+        18
+      ],
+      "damage_reduction": {
+        "town": 0.06,
+        "village_n": 0.12
+      },
+      "people_reduction": {
+        "village_n": 0.08
+      },
+      "description": "Spurs deflect the current away from the eroding bank upstream of the town."
+    },
+    {
+      "id": "BUND_HW",
+      "name": "Marginal bund at barrage / headworks",
+      "category": "Structural (bund)",
+      "cost_pkr_m": 80,
+      "location": [
+        24,
+        12
+      ],
+      "damage_reduction": {
+        "headworks": 0.45
+      },
+      "people_reduction": {},
+      "description": "Marginal bund to keep exceptional flows from outflanking the barrage."
+    },
+    {
+      "id": "BREACH",
+      "name": "Controlled breach at designated breaching section",
+      "category": "Operational (breaching)",
+      "cost_pkr_m": 40,
+      "location": [
+        12,
+        24
+      ],
+      "damage_reduction": {
+        "town": 0.15,
+        "headworks": 0.35
+      },
+      "people_reduction": {
+        "town": 0.1
+      },
+      "description": "Pre-planned cut in the right-bank dyke that diverts the peak into farmland, lowering the stage at the town and barrage. It floods land that would otherwise stay dry and puts downstream villages at risk, so it requires prior evacuation. Cost includes crop compensation.",
+      "damage_added_frac_of_assets": {
+        "farmland": 0.3,
+        "village_s": 0.08
+      },
+      "people_added_frac_of_population": {
+        "village_s": 0.4
+      }
+    },
+    {
+      "id": "EMB_RIGHT",
+      "name": "Strengthen right-bank dyke at breaching section",
+      "category": "Structural (embankment)",
+      "cost_pkr_m": 100,
+      "location": [
+        13,
+        24
+      ],
+      "damage_reduction": {
+        "farmland": 0.35,
+        "village_s": 0.2
+      },
+      "people_reduction": {
+        "village_s": 0.15
+      },
+      "description": "Reinforce the same right-bank section instead of cutting it. Cannot be combined with the controlled breach."
+    },
+    {
+      "id": "EVAC_S",
+      "name": "Pre-emptive evacuation of downstream villages",
+      "category": "Non-structural (evacuation)",
+      "cost_pkr_m": 40,
+      "location": [
+        32,
+        28
+      ],
+      "damage_reduction": {
+        "village_s": 0.05
+      },
+      "people_reduction": {
+        "village_s": 0.85
+      },
+      "description": "Move people and livestock from the right-bank villages to relief camps before the peak."
+    },
+    {
+      "id": "PUMPS",
+      "name": "Mobile dewatering pumps for town",
+      "category": "Urban drainage",
+      "cost_pkr_m": 40,
+      "location": [
+        18,
+        9
+      ],
+      "damage_reduction": {
+        "town": 0.06
+      },
+      "people_reduction": {
+        "town": 0.05
+      },
+      "description": "Dewater low-lying town areas (WASA-style disposal pumping). Limited by power cuts unless generators are also bought."
+    },
+    {
+      "id": "GENSETS",
+      "name": "Standby generators and fuel at pumping stations",
+      "category": "Urban drainage",
+      "cost_pkr_m": 20,
+      "location": [
+        19,
+        8
+      ],
+      "damage_reduction": {},
+      "people_reduction": {},
+      "description": "No benefit on its own; keeps the pumps running during grid outages."
+    },
+    {
+      "id": "WETLAND",
+      "name": "Upstream wetland and recharge-pond retention",
+      "category": "Nature-based (Recharge Pakistan style)",
+      "cost_pkr_m": 80,
+      "location": [
+        3,
+        27
+      ],
+      "damage_reduction": {
+        "village_n": 0.12,
+        "town": 0.06,
+        "headworks": 0.08,
+        "farmland": 0.12,
+        "village_s": 0.1
+      },
+      "people_reduction": {
+        "village_n": 0.08,
+        "town": 0.05,
+        "village_s": 0.05
+      },
+      "description": "Store part of the flood peak in restored wetlands and ponds upstream; small benefit everywhere downstream."
+    },
+    {
+      "id": "EWS",
+      "name": "Telemetry gauges and community early warning",
+      "category": "Non-structural (early warning)",
+      "cost_pkr_m": 20,
+      "location": [
+        6,
+        22
+      ],
+      "damage_reduction": {
+        "village_n": 0.04,
+        "village_s": 0.04,
+        "farmland": 0.03
+      },
+      "people_reduction": {
+        "village_n": 0.35,
+        "village_s": 0.3,
+        "town": 0.15
+      },
+      "description": "River gauges plus SMS and mosque-loudspeaker alerts, so people move before the water arrives."
+    }
+  ],
+  "synergies": [
+    {
+      "pair": [
+        "SPURS",
+        "EMB_TOWN"
+      ],
+      "zone": "town",
+      "damage_extra": 0.06,
+      "people_extra": 0.05,
+      "reason": "Spurs stop bank erosion that would otherwise undermine the raised embankment."
+    },
+    {
+      "pair": [
+        "PUMPS",
+        "GENSETS"
+      ],
+      "zone": "town",
+      "damage_extra": 0.06,
+      "people_extra": 0.04,
+      "reason": "Pumps only work through grid outages if generators and fuel are on site."
+    }
+  ],
+  "exclusions": [
+    {
+      "pair": [
+        "BREACH",
+        "EMB_RIGHT"
+      ],
+      "reason": "The same right-bank section cannot be both cut and reinforced."
+    }
+  ],
+  "dependencies": [
+    {
+      "if": "BREACH",
+      "requires": "EVAC_S",
+      "reason": "Never cut a dyke towards villages that have not been evacuated."
+    }
+  ]
+}

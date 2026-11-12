@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baadal</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#18222d; --ink2:#3b4856; --muted:#66727f; --line:#d5dbe2; --bg:#eef1f4; --panel:#ffffff; --soft:#f5f7f9;
+  --accent:#0d5c8f; --accent-d:#0a4a73; --accent-soft:#e3eef6; --q:#4a3f9f; --q-soft:#eceaf8;
+  --ok:#22764a; --ok-soft:#e4f2ea; --watch:#a86a0b; --high:#bf5410; --vhigh:#b83227; --exc:#861a1a; --err-soft:#fbe9e7; --warn-soft:#fdf3dc;
+  --r:8px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;color:inherit;cursor:pointer;font-size:inherit}
+#app{padding:0 0 8px}
+
+/* ---------- top bar ---------- */
+.bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--ink);color:#fff;padding:10px 16px;border-radius:var(--r) var(--r) 0 0}
+.brand{display:flex;align-items:center;gap:10px;margin-right:6px}
+.brand svg{width:28px;height:28px}
+.brand b{font-size:17px;font-weight:600;letter-spacing:.2px}
+.brand span{color:#aab6c2;font-size:12.5px;margin-left:8px}
+.seg{display:inline-flex;border:1px solid #4a5868;border-radius:6px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:6px 12px;font-size:13px;font-weight:500;color:#c5ced8;transition:background .15s}
+.seg button+button{border-left:1px solid #4a5868}
+.seg button.on{background:#fff;color:var(--ink)}
+.bar select{background:#253240;color:#fff;border:1px solid #4a5868;border-radius:6px;padding:6px 8px;font:inherit;font-size:13px;max-width:300px}
+.ghost{border:1px solid #4a5868;background:transparent;border-radius:6px;padding:6px 10px;font-size:13px;color:#c5ced8}
+.ghost:hover{background:#253240;color:#fff}
+.status{margin-left:auto;display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:6px;font-size:13px;font-weight:600;background:#253240}
+.status i{width:8px;height:8px;border-radius:50%;background:#4cc38a;display:inline-block}
+.status.alert{background:#5c1d1d} .status.alert i{background:#ff6b5e;animation:blink 1.6s infinite}
+
+/* ---------- tracker (order-style progress) ---------- */
+.tracker{display:grid;grid-template-columns:repeat(5,1fr);background:var(--panel);border:1px solid var(--line);border-top:0;padding:12px 8px 10px;border-radius:0 0 var(--r) var(--r);margin-bottom:10px}
+.tk{position:relative;text-align:center;padding:0 6px;cursor:default}
+.tk::before{content:"";position:absolute;top:13px;left:-50%;width:100%;height:2px;background:var(--line);transition:background .4s}
+.tk:first-child::before{display:none}
+.tk.done::before,.tk.active::before{background:var(--accent)}
+.tk .dot{position:relative;z-index:1;width:28px;height:28px;border-radius:50%;margin:0 auto 5px;display:grid;place-items:center;font-size:13px;font-weight:600;background:var(--panel);border:2px solid var(--line);color:var(--muted);transition:all .25s}
+.tk.active .dot{border-color:var(--accent);background:var(--accent);color:#fff}
+.tk.done .dot{border-color:var(--accent);color:var(--accent)}
+.tk.done{cursor:pointer}
+.tk .lb{font-size:12.5px;font-weight:600;color:var(--muted)}
+.tk.active .lb,.tk.done .lb{color:var(--ink)}
+.tk .vl{font-size:11.5px;color:var(--muted);min-height:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---------- main ---------- */
+.main{display:grid;grid-template-columns:minmax(0,1fr) 410px;gap:10px;align-items:stretch}
+@media(max-width:1020px){.main{grid-template-columns:1fr}.mapcard{height:480px}.panel{height:auto;min-height:420px}}
+.mapcard{position:relative;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#1c2530;height:650px}
+#map{position:absolute;inset:0}
+.leaflet-container{background:#1c2530;font-family:inherit}
+.leaflet-tile-pane{filter:saturate(.82) brightness(.9)}
+#overlay{position:absolute;left:0;top:0;pointer-events:none}
+.mapui{position:absolute;z-index:500;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.maptitle{left:12px;top:12px;padding:8px 12px;max-width:58%}
+.maptitle b{display:block;font-size:15px} .maptitle span{font-size:12px;color:var(--muted)}
+.views{right:12px;top:12px;display:none;overflow:hidden}
+.views.show{display:inline-flex}
+.views button{border:0;background:transparent;padding:8px 12px;font-size:12.5px;font-weight:600;color:var(--ink2)}
+.views button+button{border-left:1px solid var(--line)}
+.views button.on{background:var(--accent);color:#fff}
+.views button:disabled{color:#b4bcc5;cursor:not-allowed}
+.legend{left:12px;bottom:26px;padding:8px 10px;font-size:11.5px;color:var(--ink2);display:none}
+.legend.show{display:block}
+.legend .sw{width:130px;height:8px;border-radius:2px;background:linear-gradient(90deg,rgba(64,150,255,.4),rgba(20,90,230,.85));margin:4px 0 2px}
+.legend .ends{display:flex;justify-content:space-between}
+.legend small{display:block;margin-top:4px;color:var(--muted);max-width:190px;line-height:1.3}
+.pin{position:relative;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;white-space:nowrap;cursor:pointer}
+.pin .d{width:14px;height:14px;border-radius:50%;border:2px solid #fff;background:currentColor;flex:none;box-shadow:0 0 0 0 currentColor}
+.pin.threat .d{animation:pulse 2s infinite}
+.pin .l{font-size:12px;font-weight:600;color:#fff;text-shadow:0 1px 2px #000,0 0 5px #000}
+.pin.sel .d{width:18px;height:18px;border-width:3px}
+.lv-normal{color:var(--ok)} .lv-watch{color:#e0a02a} .lv-high{color:#f07a1e} .lv-very_high{color:#e5483b} .lv-exceptional{color:#c21f1f}
+.mk{width:32px;height:32px;margin:-16px 0 0 -16px;border-radius:50%;display:grid;place-items:center;background:#fff;border:2px solid #7d8894;color:#55616d;box-shadow:0 1px 4px rgba(0,0,0,.45);cursor:pointer;transition:transform .2s,background .2s,border-color .2s}
+.mk svg{width:17px;height:17px}
+.mk.on{background:var(--ok);border-color:#fff;color:#fff;transform:scale(1.12)}
+.mk:hover{transform:scale(1.18)}
+.pending{position:absolute;inset:0;z-index:600;display:none;place-items:center;background:rgba(24,34,45,.62);color:#fff;text-align:center}
+.pending.show{display:grid}
+.spin{width:34px;height:34px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;margin:0 auto 12px;animation:spin .9s linear infinite}
+.pending p{margin:0;font-weight:600;font-size:15px} .pending small{color:#cfd8e1}
+
+/* ---------- panel ---------- */
+.panel{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);height:650px}
+.pbody{flex:1;overflow:auto;padding:16px}
+.pfoot{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--line);background:var(--soft);border-radius:0 0 var(--r) var(--r)}
+.btn{border:1px solid var(--line);background:#fff;border-radius:6px;padding:10px 14px;font-weight:600;font-size:14px;transition:background .15s,border-color .15s}
+.btn:hover{border-color:#aab3bd}
+.btn.primary{flex:1;background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-d)}
+.eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--muted);margin:0 0 4px}
+h2{font-size:19px;font-weight:600;margin:0 0 8px;line-height:1.25}
+p{margin:0 0 12px}
+.fade{animation:fade .22s ease-out}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;color:#fff;background:currentColor}
+.badge span{color:#fff}
+.group{font-size:11.5px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.city{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--line);border-radius:6px;margin-bottom:6px;cursor:pointer;transition:border-color .15s,background .15s}
+.city:hover{border-color:var(--accent)} .city.sel{border-color:var(--accent);background:var(--accent-soft)}
+.city .b{width:10px;height:10px;border-radius:50%;background:currentColor;flex:none}
+.city .n{flex:1;min-width:0} .city .n b{display:block;color:var(--ink);font-weight:600} .city .n span{font-size:12px;color:var(--muted)}
+.city .t{font-size:12px;font-weight:600}
+.box{border:1px solid var(--line);border-radius:var(--r);padding:12px;margin-bottom:12px;background:var(--soft)}
+.riskrow{display:flex;align-items:center;gap:14px}
+.ring{width:72px;height:72px;flex:none}
+.ring circle{fill:none;stroke-width:8;transform:rotate(-90deg);transform-origin:50% 50%}
+.ring .bg{stroke:#dfe4ea} .ring .fg{stroke:var(--q);transition:stroke-dashoffset 1s ease-out}
+.ring text{fill:var(--ink);font-size:18px;font-weight:600;text-anchor:middle;dominant-baseline:central;font-family:inherit}
+.tagq{display:inline-block;font-size:11px;font-weight:600;color:var(--q);background:var(--q-soft);border-radius:4px;padding:1px 6px;margin-left:4px;vertical-align:1px}
+.small{font-size:12.5px;color:var(--muted)}
+.spark{width:100%;height:78px;display:block}
+.cap{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-top:3px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.stat{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;background:#fff}
+.stat .k{font-size:12px;color:var(--muted)} .stat .v{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.25}
+.stat .d{font-size:12.5px;font-weight:600}
+.good{color:var(--ok)} .bad{color:var(--vhigh)}
+.zl{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:5px 6px;border-radius:5px;cursor:default}
+.zl:hover{background:var(--warn-soft)}
+.zl .nm{width:50%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zl .br{flex:1;height:7px;background:#e3e7ec;border-radius:2px;overflow:hidden}
+.zl .br i{display:block;height:100%;background:var(--vhigh);transition:width .7s ease-out}
+.zl .vl{width:56px;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.tabs{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:12px}
+.tabs button{border:0;background:#fff;padding:9px 6px;font-weight:600;color:var(--ink2)}
+.tabs button+button{border-left:1px solid var(--line)}
+.tabs button.on{background:var(--ink);color:#fff}
+.budget .lab{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.budget .lab b{font-size:16px;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:0 0 10px}
+.item{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;margin-bottom:6px;background:#fff;transition:border-color .15s,background .15s}
+.item:hover{border-color:#aab3bd}
+.item.on{border-color:var(--ok);background:var(--ok-soft)}
+.item .ic{width:30px;height:30px;border-radius:6px;display:grid;place-items:center;background:var(--soft);color:var(--ink2);flex:none}
+.item.on .ic{background:var(--ok);color:#fff}
+.item .ic svg{width:17px;height:17px}
+.item .tx{flex:1;min-width:0} .item .tx b{display:block;font-weight:600;font-size:13.5px} .item .tx span{font-size:12px;color:var(--muted)}
+.item .add{border:1px solid var(--line);background:#fff;border-radius:5px;padding:5px 9px;font-size:12.5px;font-weight:600;min-width:74px}
+.item.on .add{border-color:var(--ok);color:var(--ok)}
+.item .add:hover{border-color:var(--accent)}
+.cart{border:1px solid var(--ink);border-radius:var(--r);padding:12px;margin-top:12px;background:#fff}
+.cart h4{margin:0 0 8px;font-size:13px;font-weight:600;display:flex;justify-content:space-between}
+.line{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:3px 0;font-variant-numeric:tabular-nums}
+.line.tot{border-top:1px solid var(--line);margin-top:6px;padding-top:7px;font-weight:600}
+.meter{height:7px;background:#e3e7ec;border-radius:2px;overflow:hidden;margin-top:8px}
+.meter i{display:block;height:100%;background:var(--ok);transition:width .5s,background .2s}
+.meter.over i{background:var(--vhigh)}
+.msg{border-radius:6px;padding:10px 12px;font-size:13px;margin-top:10px;border:1px solid var(--line);background:var(--soft)}
+.msg.ok{background:var(--ok-soft);border-color:#b9dcc8} .msg.warn{background:var(--warn-soft);border-color:#ecd49a} .msg.err{background:var(--err-soft);border-color:#eeb9b2}
+details{margin-top:10px;font-size:12.5px;color:var(--ink2)} summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.toast{position:fixed;left:50%;bottom:16px;transform:translate(-50%,16px);background:var(--ink);color:#fff;padding:10px 14px;border-radius:6px;font-size:13px;opacity:0;transition:all .25s;z-index:900;max-width:90%}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.foot{margin-top:8px;font-size:11.5px;color:var(--muted);padding:0 4px}
+@keyframes pulse{0%{box-shadow:0 0 0 0 currentColor}70%{box-shadow:0 0 0 11px rgba(0,0,0,0)}100%{box-shadow:0 0 0 0 rgba(0,0,0,0)}}
+@keyframes blink{50%{opacity:.35}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="bar">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" fill="none"><path d="M9 21a6 6 0 010-12 8 8 0 0115.200-1.500A6 6 0 0124 21z" fill="#fff"/><path d="M11 25l-1.200 3M16.500 25l-1.200 3M22 25l-1.200 3" stroke="#7fc1ee" stroke-width="2" stroke-linecap="round"/></svg>
+      <div><b>Baadal</b><span>Flood response planner for Pakistan</span></div>
+    </div>
+    <div class="seg" id="modeseg"><button data-mode="live">Live forecast</button><button data-mode="replay">Replay a past flood</button></div>
+    <select id="eventsel" style="display:none"></select>
+    <button class="ghost" id="refresh" style="display:none">Update weather</button>
+    <div class="status" id="status"><i></i><span></span></div>
+  </div>
+  <div class="tracker" id="tracker"></div>
+
+  <div class="main">
+    <div class="mapcard" id="mapcard">
+      <div id="map"></div>
+      <canvas id="overlay" class="leaflet-zoom-hide"></canvas>
+      <div class="mapui maptitle" id="maptitle"></div>
+      <div class="mapui views" id="views"><button data-v="normal">Normal</button><button data-v="flood">Flood</button><button data-v="plan">With plan</button></div>
+      <div class="mapui legend" id="legend"><div>Flood water depth</div><div class="sw"></div><div class="ends"><span>shallow</span><span id="legmax">2 m</span></div><small>Simple fill model on real elevation and land cover. Indicative only.</small></div>
+      <div class="pending" id="pending"><div><div class="spin"></div><p id="pendmsg">Working</p><small id="pendsub"></small></div></div>
+    </div>
+    <div class="panel">
+      <div class="pbody" id="panel"></div>
+      <div class="pfoot" id="pfoot"></div>
+    </div>
+  </div>
+  <div class="foot" id="src"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+"use strict";
+// ---------------------------------------------------------------- Streamlit bridge
+function post(type, data){ window.parent.postMessage(Object.assign({isStreamlitMessage:true, type:type}, data||{}), "*"); }
+function setHeight(){ post("streamlit:setFrameHeight", {height: document.getElementById("app").offsetHeight + 6}); }
+function emit(evt, msg, sub){ evt.nonce = Date.now() + "-" + Math.random(); showPending(msg, sub); post("streamlit:setComponentValue", {value: evt, dataType: "json"}); }
+window.addEventListener("message", function(ev){ if (ev.data && ev.data.type === "streamlit:render") onRender(ev.data.args.payload); });
+
+// ---------------------------------------------------------------- state
+var P = null, C = null;
+var step = 1, view = "normal", planMode = "quantum", mine = null, hoverZone = -1, goAfterRender = 0;
+var cells = 0, cur = null, from = null, to = null, t0 = 0, DUR = 1500, ZMAX = 1.5, zoneCells = [];
+var lmap = null, pins = {}, mks = [];
+var PK_BOUNDS = [[23.600, 61.000], [36.900, 77.000]];
+var $ = function(id){ return document.getElementById(id); };
+var fmt = function(v){ return Math.round(v).toLocaleString("en-US"); };
+var LEVEL = {normal:"#22764a", watch:"#a86a0b", high:"#bf5410", very_high:"#b83227", exceptional:"#861a1a"};
+var STEPS = ["Choose city", "Assess threat", "See impact", "Plan response", "Review plan"];
+
+var ICON = {
+  shield:'<path d="M12 3l7 3v5c0 4.500-3 8-7 10-4-2-7-5.500-7-10V6z"/>', spur:'<path d="M5 21V4M5 8h10M5 14h7"/>',
+  cut:'<path d="M3 7h7M14 7h7M12 3v14M8 13l4 4 4-4M5 21h14"/>',
+  people:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.300 2.700-6 6-6s6 2.700 6 6M16 5.500a2.500 2.500 0 010 5M17 14.200c2.300.600 4 2.700 4 5.800"/>',
+  pump:'<path d="M4 20h16M7 20V10h6v10M13 13h3a3 3 0 013 3v4M9 6h2v4H9z"/>', bolt:'<path d="M13 2L5 14h6l-1 8 8-12h-6z"/>',
+  leaf:'<path d="M5 19c0-8 6-14 14-14 0 8-6 14-14 14zM5 19l8-8"/>', bell:'<path d="M6 16v-5a6 6 0 1112 0v5l2 2H4zM10 21a2 2 0 004 0"/>',
+  wave:'<path d="M3 9c2-2 4-2 6 0s4 2 6 0 4-2 6 0M3 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>', home:'<path d="M4 11l8-7 8 7M6 10v10h12V10M10 20v-5h4v5"/>',
+  tank:'<path d="M5 8h14v10a2 2 0 01-2 2H7a2 2 0 01-2-2zM5 13h14M9 4v4M15 4v4"/>', broom:'<path d="M14 4l6 6M17 7L9 15M9 15l-5 5M6 12l6 6"/>'
+};
+var ICON_FOR = {EMB_TOWN:"shield",SPURS:"spur",BUND_HW:"shield",BREACH:"cut",EMB_RIGHT:"shield",EVAC_S:"people",PUMPS:"pump",GENSETS:"bolt",
+  WETLAND:"leaf",EWS:"bell",DESILT:"broom",ENCROACH:"cut",RESETTLE:"home",DISPOSAL:"pump",MOBILE:"pump",TANK:"tank",GREEN:"leaf",ALERTS:"bell",OUTFALL:"wave"};
+function icon(id){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.900" stroke-linecap="round" stroke-linejoin="round">' + (ICON[ICON_FOR[id]] || ICON.shield) + "</svg>"; }
+
+// ---------------------------------------------------------------- planning model (same maths as baadal/model.py and simulate.py)
+function evalPlan(x){
+  var pl = C.plan, Z = pl.base_damage.length, n = x.length, remD = [], remP = [], i, z, s;
+  for (z = 0; z < Z; z++){
+    var fd = 1, fp = 1, addD = 0, addP = 0;
+    for (i = 0; i < n; i++) if (x[i]){ fd *= 1 - pl.R[i][z]; fp *= 1 - pl.Q[i][z]; addD += pl.A[i][z]; addP += pl.Ap[i][z]; }
+    for (s = 0; s < pl.synergies.length; s++){ var sy = pl.synergies[s]; if (sy[2] === z && x[sy[0]] && x[sy[1]]){ fd *= 1 - sy[3]; fp *= 1 - sy[4]; } }
+    remD.push((pl.base_damage[z] + addD) * fd); remP.push((pl.base_people[z] + addP) * fp);
+  }
+  var cost = 0, score = 0, count = 0, j;
+  for (i = 0; i < n; i++) if (x[i]){ count++; cost += pl.measures[i].cost; score += pl.lin[i]; for (j = i + 1; j < n; j++) if (x[j]) score += pl.pair[i][j]; }
+  var problems = [];
+  if (cost > P.budget + 1e-9) problems.push("It is over budget by PKR " + fmt(cost - P.budget) + " m.");
+  pl.exclusions.forEach(function(e){ if (x[e[0]] && x[e[1]]) problems.push(pl.measures[e[0]].short + " and " + pl.measures[e[1]].short + " cannot both be done."); });
+  pl.dependencies.forEach(function(d){ if (x[d[0]] && !x[d[1]]) problems.push(pl.measures[d[0]].short + " needs " + pl.measures[d[1]].short + " first."); });
+  var sum = function(a){ return a.reduce(function(p, q){ return p + q; }, 0); };
+  return {remD: remD, remP: remP, damage: sum(remD), people: sum(remP), cost: cost, score: score, count: count, problems: problems};
+}
+function dmgFrac(d, landuse){
+  var c = C.plan.curves[landuse], xs = c[0], ys = c[1];
+  if (d <= 0) return 0; if (d >= xs[xs.length - 1]) return ys[ys.length - 1];
+  for (var k = 1; k < xs.length; k++) if (d <= xs[k]) return ys[k - 1] + (ys[k] - ys[k - 1]) * (d - xs[k - 1]) / (xs[k] - xs[k - 1]);
+  return 1;
+}
+function depthAfter(x){
+  var M = C.model, out = Float32Array.from(M.depth), ev = evalPlan(x);
+  M.zones.forEach(function(zn, z){
+    var idx = zoneCells[z], target = ev.remD[z], mx = 0, k; if (!idx.length) return;
+    for (k = 0; k < idx.length; k++) mx = Math.max(mx, M.depth[idx[k]]);
+    var total = function(sh){ var t = 0; for (var q = 0; q < idx.length; q++) t += dmgFrac(Math.max(0, M.depth[idx[q]] + sh), zn.landuse) * zn.asset; return t; };
+    var lo = -mx - 0.010, hi = 6, sh;
+    if (target <= 1e-9) sh = lo; else if (target >= total(hi)) sh = hi;
+    else { for (k = 0; k < 40; k++){ var mid = (lo + hi) / 2; if (total(mid) < target) lo = mid; else hi = mid; } sh = (lo + hi) / 2; }
+    for (k = 0; k < idx.length; k++) out[idx[k]] = Math.max(0, M.depth[idx[k]] + sh);
+  });
+  return out;
+}
+function recommended(){ return C.plan.quantum ? C.plan.quantum.x : C.plan.exact.x; }
+function activePlan(){ if (!C.plan) return null; return (planMode === "mine" && mine) ? mine : recommended(); }
+
+// ---------------------------------------------------------------- render entry
+function onRender(p){
+  var cityChanged = !C || p.city.id !== C.id || !P || p.snapshot_key !== P.snapshot_key;
+  P = p; C = p.city; hidePending();
+  if (cityChanged){
+    planMode = "quantum"; mine = null; prepareModel();
+    step = goAfterRender || 1; goAfterRender = 0;
+  }
+  if (C.plan && (!mine || mine.length !== C.plan.measures.length)) mine = recommended().slice();
+  if (step >= 4 && !C.plan) step = 3;
+  renderHeader(); initMap(); renderPins(); go(step, cityChanged ? "city" : "same");
+}
+function prepareModel(){
+  var M = C.model; cells = M.rows * M.cols;
+  zoneCells = M.zones.map(function(){ return []; });
+  for (var i = 0; i < cells; i++) if (M.zone_idx[i] >= 0) zoneCells[M.zone_idx[i]].push(i);
+  cur = new Float32Array(cells); from = new Float32Array(cells); to = new Float32Array(cells);
+  var mx = 0; for (var k = 0; k < cells; k++) mx = Math.max(mx, M.depth[k]);
+  ZMAX = Math.max(1.200, mx); $("legmax").textContent = ZMAX.toFixed(1) + " m";
+}
+function renderHeader(){
+  document.querySelectorAll("#modeseg button").forEach(function(b){ b.classList.toggle("on", b.dataset.mode === P.mode); });
+  var sel = $("eventsel"); sel.style.display = P.mode === "replay" ? "" : "none"; $("refresh").style.display = P.mode === "live" ? "" : "none";
+  sel.innerHTML = P.events.map(function(e){ return '<option value="' + e.id + '"' + (e.id === P.event_id ? " selected" : "") + ">" + e.name + "</option>"; }).join("");
+  var n = P.cities.filter(function(c){ return c.threat; }).length, st = $("status");
+  st.className = "status" + (n ? " alert" : "");
+  st.querySelector("span").textContent = n ? n + " of " + P.cities.length + " cities under flood threat" : "No flood threat this week";
+  $("src").textContent = (P.mode === "live" ? "Live weather collected " + P.fetched_at.replace("T", " ") : "Replay of recorded data, week starting " + P.as_of) +
+    ". Weather and river flow: Open-Meteo (GEFS, GloFAS, ERA5). Imagery: Esri World Imagery. Elevation: AWS Terrain Tiles. Land cover: Sentinel-2 10 m (Esri, Impact Observatory). Damage and cost figures are illustrative.";
+}
+function renderTracker(){
+  var vals = ["", "", "", "", ""];
+  if (step > 1) vals[0] = C.name;
+  if (step > 2) vals[1] = C.level_label;
+  if (step > 3) vals[2] = C.plan ? "PKR " + fmt(C.damage_total) + " m at risk" : "No flooding";
+  if (step > 4 && C.plan){ var ev = evalPlan(activePlan()); vals[3] = ev.count + " measures, PKR " + fmt(ev.cost) + " m"; }
+  $("tracker").innerHTML = STEPS.map(function(s, i){ var n = i + 1, cls = n < step ? "done" : n === step ? "active" : "";
+    return '<div class="tk ' + cls + '" data-n="' + n + '"><div class="dot">' + (n < step ? "✓" : n) + '</div><div class="lb">' + s + '</div><div class="vl">' + vals[i] + "</div></div>"; }).join("");
+  document.querySelectorAll(".tk.done").forEach(function(el){ el.onclick = function(){ go(+el.dataset.n); }; });
+}
+
+// ---------------------------------------------------------------- map
+function initMap(){
+  if (lmap || !window.L) return;
+  lmap = L.map("map", {zoomControl:false, attributionControl:true, scrollWheelZoom:true, zoomSnap:0.250, zoomAnimation:true, fadeAnimation:true});
+  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {maxZoom:17,
+    attribution:"Imagery &copy; Esri, Maxar, Earthstar Geographics"}).addTo(lmap);
+  L.control.zoom({position:"bottomright"}).addTo(lmap);
+  var fp = lmap.createPane("flood"); fp.style.zIndex = 450; fp.style.pointerEvents = "none"; fp.appendChild($("overlay"));
+  lmap.fitBounds(PK_BOUNDS);
+  setTimeout(function(){ lmap.invalidateSize(); if (step === 1) lmap.fitBounds(PK_BOUNDS); else flyCity(false); }, 300);
+}
+function renderPins(){
+  if (!lmap) return;
+  Object.keys(pins).forEach(function(k){ lmap.removeLayer(pins[k]); }); pins = {};
+  if (step > 1) return;
+  P.cities.forEach(function(c){
+    var html = '<div class="pin lv-' + c.level + (c.threat ? " threat" : "") + (c.id === C.id && step > 1 ? " sel" : "") + '"><span class="d"></span><span class="l">' + c.short + "</span></div>";
+    var m = L.marker([c.lat, c.lon], {icon: L.divIcon({html: html, className: "", iconSize: [0, 0]}), zIndexOffset: c.threat ? 500 : 0}).addTo(lmap);
+    m.on("click", function(){ pickCity(c.id); }); pins[c.id] = m;
+  });
+}
+function cityBounds(){ var b = C.model.bbox; return [[b[0], b[1]], [b[2], b[3]]]; }
+function flyCity(animate){ if (!lmap) return; if (animate) lmap.flyToBounds(cityBounds(), {duration: 1.600, padding: [10, 10]}); else lmap.fitBounds(cityBounds(), {padding: [10, 10]}); }
+function renderMarkers(){
+  if (!lmap) return;
+  mks.forEach(function(m){ lmap.removeLayer(m); }); mks = [];
+  if (!C.plan || step < 4 || view !== "plan") return;
+  var x = activePlan();
+  C.plan.measures.forEach(function(m, i){
+    var mk = L.marker(m.latlon, {icon: L.divIcon({html: '<div class="mk' + (x[i] ? " on" : "") + '">' + icon(m.id) + "</div>", className: "", iconSize: [0, 0]}), zIndexOffset: x[i] ? 900 : 700}).addTo(lmap);
+    mk.bindTooltip("<b>" + m.short + "</b><br>PKR " + fmt(m.cost) + " m. Affects: " + C.model.zones[m.zone].name, {direction: "top", offset: [0, -16]});
+    mk.on("click", function(){ toggleMeasure(i); }); mk.on("mouseover", function(){ hoverZone = m.zone; }); mk.on("mouseout", function(){ hoverZone = -1; });
+    mks.push(mk);
+  });
+}
+function setView(v, animate){
+  view = v; from.set(cur);
+  if (v === "normal") to.fill(0); else if (v === "flood" || !C.plan) to.set(C.model.depth); else to.set(depthAfter(activePlan()));
+  t0 = performance.now() - (animate === false ? DUR : 0);
+  document.querySelectorAll("#views button").forEach(function(b){ b.classList.toggle("on", b.dataset.v === view);
+    b.disabled = (b.dataset.v === "flood" && step < 3) || (b.dataset.v === "plan" && (step < 4 || !C.plan)); });
+  renderMarkers();
+}
+var waterCv = document.createElement("canvas"), zoneCv = document.createElement("canvas");
+function frame(now){
+  requestAnimationFrame(frame);
+  var cv = $("overlay"), box = $("mapcard").getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+  var w = Math.round(box.width * dpr), h = Math.round(box.height * dpr); if (w < 10) return;
+  if (cv.width !== w || cv.height !== h){ cv.width = w; cv.height = h; cv.style.width = box.width + "px"; cv.style.height = box.height + "px"; }
+  var g = cv.getContext("2d"); g.clearRect(0, 0, w, h);
+  if (!C || !lmap || step < 2) return;
+  L.DomUtil.setPosition(cv, lmap.containerPointToLayerPoint([0, 0]));
+  var M = C.model, k = Math.min(1, (now - t0) / DUR), e = k < 0.500 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2, i;
+  for (i = 0; i < cells; i++) cur[i] = from[i] + (to[i] - from[i]) * e;
+  var tl = lmap.latLngToContainerPoint([M.bbox[2], M.bbox[1]]), br = lmap.latLngToContainerPoint([M.bbox[0], M.bbox[3]]);
+  var x0 = tl.x * dpr, y0 = tl.y * dpr, ww = (br.x - tl.x) * dpr, hh = (br.y - tl.y) * dpr, tt = now / 1000;
+  if (waterCv.width !== M.cols){ waterCv.width = M.cols; waterCv.height = M.rows; zoneCv.width = M.cols; zoneCv.height = M.rows; }
+  var wg = waterCv.getContext("2d"), img = wg.createImageData(M.cols, M.rows);
+  for (i = 0; i < cells; i++){
+    var d = cur[i];
+    if (d > 0.050 && !M.water[i]){
+      var q = Math.min(1, d / ZMAX), sh = 1 + 0.040 * Math.sin(tt * 1.600 + (i % M.cols) * 0.600 + Math.floor(i / M.cols) * 0.450);
+      img.data[i * 4] = 64 - 44 * q; img.data[i * 4 + 1] = 150 - 60 * q; img.data[i * 4 + 2] = 255 - 25 * q;
+      img.data[i * 4 + 3] = Math.min(215, (80 + 125 * Math.min(1, d / 1.000)) * sh);
+    }
+  }
+  wg.putImageData(img, 0, 0);
+  g.imageSmoothingEnabled = true; g.imageSmoothingQuality = "high"; g.drawImage(waterCv, x0, y0, ww, hh);
+  if (hoverZone >= 0){
+    var zg = zoneCv.getContext("2d"), zi = zg.createImageData(M.cols, M.rows);
+    for (i = 0; i < cells; i++) if (M.zone_idx[i] === hoverZone){ zi.data[i * 4] = 255; zi.data[i * 4 + 1] = 196; zi.data[i * 4 + 2] = 0; zi.data[i * 4 + 3] = 120; }
+    zg.putImageData(zi, 0, 0); g.imageSmoothingEnabled = false; g.drawImage(zoneCv, x0, y0, ww, hh);
+  }
+  g.strokeStyle = "rgba(255,255,255,0.850)"; g.lineWidth = 1.500 * dpr; g.setLineDash([6 * dpr, 5 * dpr]); g.strokeRect(x0, y0, ww, hh); g.setLineDash([]);
+}
+requestAnimationFrame(frame);
+
+// ---------------------------------------------------------------- navigation
+function pickCity(id){
+  if (id === C.id){ go(2); return; }
+  var c = P.cities.filter(function(q){ return q.id === id; })[0]; goAfterRender = 2;
+  emit({type:"city", id:id}, "Assessing " + c.name, c.threat ? "Collecting data, estimating the risk and planning with Qiskit" : "Collecting data and estimating the risk");
+}
+function go(s, fromRender){
+  var prev = step; step = s;
+  if (lmap && fromRender !== "same"){
+    if (step === 1){ if (prev !== 1) lmap.flyToBounds(PK_BOUNDS, {duration: 1.200}); else lmap.fitBounds(PK_BOUNDS); }
+    else if (prev === 1 || fromRender === "city") flyCity(true);
+  }
+  $("views").classList.toggle("show", step >= 2); $("legend").classList.toggle("show", step >= 3);
+  $("maptitle").innerHTML = step === 1 ? "<b>Pakistan</b><span>" + P.cities.length + " monitored cities. Select one on the map or in the list.</span>"
+    : "<b>" + C.name + ", " + C.province + "</b><span>" + (C.kind === "riverine" ? C.river + " · " : "") + "dashed box: modelled area, about 12 km wide</span>";
+  renderPins(); renderTracker(); renderPanel();
+  setView(step <= 2 ? "normal" : step === 3 ? "flood" : "plan", !(fromRender === "same" && prev === step && step < 4));
+  setTimeout(setHeight, 80);
+}
+
+// ---------------------------------------------------------------- panel
+function ringSvg(p){ var r = 29, len = 2 * Math.PI * r;
+  return '<svg class="ring" viewBox="0 0 72 72"><circle class="bg" cx="36" cy="36" r="' + r + '"/><circle class="fg" cx="36" cy="36" r="' + r + '" stroke-dasharray="' + len + '" stroke-dashoffset="' + len + '" data-off="' + (len * (1 - p)) + '"/><text x="36" y="37">' + Math.round(p * 100) + "%</text></svg>"; }
+function sparkSvg(){
+  var W = 360, H = 78, n = C.days.length, bw = W / n, rmax = Math.max(10, Math.max.apply(null, C.rain_daily));
+  var s = '<svg class="spark" viewBox="0 0 ' + W + " " + H + '" preserveAspectRatio="none">';
+  C.rain_daily.forEach(function(v, i){ var hh = v / rmax * (H - 10); s += '<rect x="' + (i * bw + bw * 0.200) + '" y="' + (H - hh) + '" width="' + (bw * 0.600) + '" height="' + hh + '" fill="#7fb2d6"/>'; });
+  if (C.discharge_daily){
+    var thr = C.thresholds.high, qmax = Math.max(thr * 1.150, Math.max.apply(null, C.discharge_daily)), y = function(v){ return H - 4 - v / qmax * (H - 12); };
+    s += '<line x1="0" x2="' + W + '" y1="' + y(thr) + '" y2="' + y(thr) + '" stroke="#bf5410" stroke-dasharray="5 4" stroke-width="1.300"/>';
+    s += '<polyline fill="none" stroke="#b83227" stroke-width="2.200" stroke-linejoin="round" points="' + C.discharge_daily.map(function(v, i){ return (i * bw + bw / 2) + "," + y(v); }).join(" ") + '"/>';
+  }
+  return s + "</svg>";
+}
+function threatSentence(){
+  var live = P.mode === "live", ratio = C.best / C.thresholds.high;
+  if (C.kind === "riverine") return "The " + C.river + " at " + C.name + (live ? " is forecast to peak at " : " peaked at ") + "<b>" + fmt(C.best) + " m³/s</b>. That is " +
+    (ratio >= 1 ? "<b>" + ratio.toFixed(1) + " times</b> the flow at which flooding starts" : "<b>" + Math.round(ratio * 100) + "%</b> of the flow at which flooding starts") + " (" + fmt(C.thresholds.high) + " m³/s).";
+  return "<b>" + fmt(C.best) + " mm</b> of rain " + (live ? "is forecast" : "fell") + " in 72 hours at " + C.name + ". Urban flooding starts at about " + fmt(C.thresholds.high) + " mm.";
+}
+function stat(k, v, d, cls){ return '<div class="stat"><div class="k">' + k + '</div><div class="v">' + v + "</div>" + (d ? '<div class="d ' + (cls || "") + '">' + d + "</div>" : "") + "</div>"; }
+function btn(label, cls, id){ return '<button class="btn ' + (cls || "") + '" id="' + id + '">' + label + "</button>"; }
+
+function renderPanel(){
+  var h = "", f = "", hasPlan = !!C.plan;
+  if (step === 1){
+    var th = P.cities.filter(function(c){ return c.threat; }), ok = P.cities.filter(function(c){ return !c.threat; });
+    var row = function(c){ return '<div class="city lv-' + c.level + (c.id === C.id ? " sel" : "") + '" data-id="' + c.id + '"><span class="b"></span><span class="n"><b>' + c.name + "</b><span>" + c.river + '</span></span><span class="t">' + c.level_label + "</span></div>"; };
+    h = '<p class="eyebrow">Step 1 of 5</p><h2>Which city do you want to plan for?</h2><p>Baadal checks the weather and river forecasts for ' + P.cities.length + " cities. " +
+      (th.length ? "<b>" + th.length + " are under flood threat</b> in this " + (P.mode === "live" ? "forecast." : "replay.") : "None is under flood threat right now. Try <b>Replay a past flood</b> in the top bar to see a real event.") + "</p>" +
+      (th.length ? '<div class="group">Under threat</div>' + th.map(row).join("") : "") + '<div class="group">' + (th.length ? "No threat" : "All cities") + "</div>" + ok.map(row).join("");
+    f = btn("Assess " + C.name + " →", "primary", "next");
+  } else if (step === 2){
+    h = '<p class="eyebrow">Step 2 of 5 · ' + C.name + '</p><h2 style="color:' + LEVEL[C.level] + '">' + C.level_label + "</h2><p>" + threatSentence() + "</p>" +
+      '<div class="box"><div class="riskrow">' + ringSvg(C.risk.estimate) + '<div><b>Chance of flooding</b><span class="tagq">Qiskit</span><div class="small">Estimated from ' + C.risk.n_members +
+      " forecast scenarios with quantum amplitude estimation on " + C.risk.qubits + " qubits. The exact answer is " + Math.round(C.risk.exact * 100) + "%.</div></div></div></div>" +
+      '<div class="box" style="background:#fff"><b>The next 7 days</b>' + sparkSvg() + '<div class="cap"><span>' + C.days[0].slice(5) + "</span><span>bars: daily rain" + (C.discharge_daily ? " · line: river flow · dashed: flood level" : "") + "</span><span>" + C.days[C.days.length - 1].slice(5) + "</span></div></div>";
+    f = btn("← Cities", "", "back") + btn("See the impact →", "primary", "next");
+  } else if (step === 3){
+    h = '<p class="eyebrow">Step 3 of 5 · ' + C.name + "</p>";
+    if (hasPlan){
+      h += "<h2>If nothing is done</h2><p>The map shows where the water would spread, based on the real elevation of the ground.</p>" +
+        '<div class="two">' + stat("Damage", "PKR " + fmt(C.damage_total) + " m") + stat("People exposed", fmt(C.people_total)) + "</div><b>Where the damage falls</b><div style=\"margin-top:6px\">";
+      var zm = Math.max.apply(null, C.zone_damage) || 1;
+      C.model.zones.forEach(function(z, i){ h += '<div class="zl" data-z="' + i + '"><span class="nm">' + z.name + '</span><span class="br"><i style="width:' + (C.zone_damage[i] / zm * 100) + '%"></i></span><span class="vl">' + fmt(C.zone_damage[i]) + "</span></div>"; });
+      h += '</div><p class="small" style="margin-top:8px">Point at a row to highlight that area on the map. Figures are illustrative.</p>';
+      f = btn("← Threat", "", "back") + btn("Plan the response →", "primary", "next");
+    } else {
+      h += "<h2>No flooding expected</h2><p>The forecast for " + C.name + " stays below the level at which flooding starts, so there is nothing to plan here.</p>";
+      f = btn("← Threat", "", "back") + btn("Choose another city", "primary", "home");
+    }
+  } else if (step === 4) { h = planHtml(); f = btn("← Impact", "", "back") + btn("Review plan →", "primary", "next"); }
+  else { h = reviewHtml(); f = btn("← Adjust plan", "", "back") + btn("Plan another city", "primary", "home"); }
+  var el = $("panel"); el.innerHTML = '<div class="fade">' + h + "</div>"; el.scrollTop = 0; $("pfoot").innerHTML = f;
+  var b; if ((b = $("next"))) b.onclick = function(){ go(step + 1); }; if ((b = $("back"))) b.onclick = function(){ go(step - 1); }; if ((b = $("home"))) b.onclick = function(){ go(1); };
+  el.querySelectorAll(".city").forEach(function(r){ r.onclick = function(){ pickCity(r.dataset.id); }; });
+  el.querySelectorAll(".zl").forEach(function(r){ r.onmouseenter = function(){ hoverZone = +r.dataset.z; }; r.onmouseleave = function(){ hoverZone = -1; }; });
+  setTimeout(function(){ el.querySelectorAll(".ring .fg").forEach(function(c){ c.style.strokeDashoffset = c.dataset.off; }); }, 50);
+  if (step === 4) bindPlan();
+}
+function cartHtml(x, ev, editable){
+  var pl = C.plan, h = '<div class="cart"><h4><span>' + (planMode === "mine" ? "Your plan" : "Recommended plan") + "</span><span>" + ev.count + " measure" + (ev.count === 1 ? "" : "s") + "</span></h4>";
+  if (!ev.count) h += '<div class="small">No measures selected yet.</div>';
+  pl.measures.forEach(function(m, i){ if (x[i]) h += '<div class="line"><span>' + m.short + "</span><span>PKR " + fmt(m.cost) + " m</span></div>"; });
+  var left = P.budget - ev.cost;
+  h += '<div class="line tot"><span>Total</span><span>PKR ' + fmt(ev.cost) + " m of " + fmt(P.budget) + " m</span></div>" +
+    '<div class="meter' + (left < 0 ? " over" : "") + '"><i style="width:' + Math.min(100, ev.cost / Math.max(1, P.budget) * 100) + '%"></i></div>' +
+    '<div class="small" style="margin-top:5px">' + (left >= 0 ? "PKR " + fmt(left) + " m left in the budget" : "PKR " + fmt(-left) + " m over the budget") + "</div></div>";
+  return h;
+}
+function verdictHtml(ev){
+  var pl = C.plan, best = pl.exact.score, total = fmt(Math.pow(2, pl.measures.length)), pct = best > 0 ? ev.score / best : 0;
+  if (planMode === "quantum"){
+    if (!pl.quantum) return '<div class="msg warn">Set a budget above zero and Qiskit will recommend a plan.</div>';
+    return Math.abs(pl.quantum.score - best) < 1e-6
+      ? '<div class="msg ok"><b>Checked.</b> We compared this with all ' + total + " possible plans on a classical computer. It is the best one.</div>"
+      : '<div class="msg warn"><b>Good, not the best.</b> This plan achieves ' + (pct * 100).toFixed(1) + "% of the best possible result, which we found by checking all " + total + " plans classically.</div>";
+  }
+  if (ev.problems.length) return '<div class="msg err"><b>This plan cannot be used.</b> ' + ev.problems.join(" ") + "</div>";
+  return '<div class="msg ' + (pct > 0.999 ? "ok" : "warn") + '">Your plan achieves <b>' + (pct * 100).toFixed(1) + "%</b> of the best possible result." +
+    (pl.quantum ? " The Qiskit plan achieves " + (pl.quantum.score / best * 100).toFixed(1) + "%." : "") + "</div>";
+}
+function planHtml(){
+  var pl = C.plan, x = activePlan(), ev = evalPlan(x), rec = recommended();
+  var h = '<p class="eyebrow">Step 4 of 5 · ' + C.name + "</p><h2>Choose the response</h2>" +
+    '<div class="tabs"><button class="' + (planMode === "quantum" ? "on" : "") + '" data-pm="quantum">Recommended by Qiskit</button><button class="' + (planMode === "mine" ? "on" : "") + '" data-pm="mine">Build my own</button></div>' +
+    '<div class="budget"><div class="lab"><span>Budget</span><b>PKR <span id="bval">' + P.budget + "</span> m</b></div>" +
+    '<input type="range" id="brange" min="0" max="' + P.budget_max + '" step="' + P.budget_step + '" value="' + P.budget + '"></div>';
+  pl.measures.forEach(function(m, i){
+    h += '<div class="item' + (x[i] ? " on" : "") + '" data-i="' + i + '"><div class="ic">' + icon(m.id) + '</div><div class="tx"><b>' + m.short + (rec[i] ? '<span class="tagq">Qiskit pick</span>' : "") + "</b><span>PKR " + fmt(m.cost) + " m · " + C.model.zones[m.zone].name + "</span></div>" +
+      '<button class="add" data-i="' + i + '">' + (x[i] ? "✓ Added" : "Add") + "</button></div>"; });
+  h += cartHtml(x, ev) + '<div class="two" style="margin-top:12px">' +
+    stat("Damage", "PKR " + fmt(ev.damage) + " m", (ev.damage <= C.damage_total ? "▼ " + fmt(C.damage_total - ev.damage) + " saved" : "▲ " + fmt(ev.damage - C.damage_total) + " more"), ev.damage <= C.damage_total ? "good" : "bad") +
+    stat("People exposed", fmt(ev.people), (ev.people <= C.people_total ? "▼ " + fmt(C.people_total - ev.people) + " protected" : "▲ " + fmt(ev.people - C.people_total) + " more"), ev.people <= C.people_total ? "good" : "bad") + "</div>" + verdictHtml(ev);
+  return h;
+}
+function reviewHtml(){
+  var pl = C.plan, x = activePlan(), ev = evalPlan(x), q = pl.quantum;
+  var h = '<p class="eyebrow">Step 5 of 5 · ' + C.name + "</p><h2>Plan summary</h2><p>" + C.level_label + " at " + C.name + ". " + (planMode === "mine" ? "You built this plan yourself." : "This plan was chosen by Qiskit.") + "</p>" +
+    cartHtml(x, ev) + '<div class="two" style="margin-top:12px">' +
+    stat("Damage", "PKR " + fmt(ev.damage) + " m", "was PKR " + fmt(C.damage_total) + " m", "good") + stat("People exposed", fmt(ev.people), "was " + fmt(C.people_total), "good") + "</div>" + verdictHtml(ev);
+  h += "<details><summary>How Qiskit was used</summary><p style=\"margin-top:6px\"><b>Risk.</b> Quantum amplitude estimation on " + C.risk.qubits + " qubits estimated the chance of flooding at " +
+    Math.round(C.risk.estimate * 100) + "% (exact: " + Math.round(C.risk.exact * 100) + "%).</p>" +
+    (q ? "<p><b>Plan.</b> QAOA used " + q.qubits + " qubits, one per measure, with " + q.layers + " layers and " + fmt(q.cx) + " two-qubit gates. It was measured " + q.shots + " times on a simulator (" + q.seconds +
+      " s), and the best valid result was kept." + (q.score_raw !== null && Math.abs(q.score - q.score_raw) > 1e-6 ? " A quick classical check of single changes and swaps then improved it." : " A quick classical check of single changes and swaps found nothing better.") +
+      " The trained circuit is " + (q.p_opt * Math.pow(2, pl.measures.length)).toFixed(1) + " times as likely as a random guess to return the best plan.</p>" : "") + "</details>" +
+    "<details><summary>What to keep in mind</summary><p style=\"margin-top:6px\">The flood map is a simple fill model on real elevation, not a full hydraulic simulation. Costs, damage and population figures are illustrative. " +
+    "This is a small problem run on a simulator, so a classical computer can also check every plan; that is how we verify the quantum result. Real decisions on breaching and evacuation belong to the responsible authorities.</p></details>";
+  return h;
+}
+function bindPlan(){
+  document.querySelectorAll(".tabs button").forEach(function(b){ b.onclick = function(){ planMode = b.dataset.pm; refreshPlan(); }; });
+  document.querySelectorAll(".item").forEach(function(d){ d.onmouseenter = function(){ hoverZone = C.plan.measures[+d.dataset.i].zone; }; d.onmouseleave = function(){ hoverZone = -1; }; });
+  document.querySelectorAll(".item .add").forEach(function(b){ b.onclick = function(){ toggleMeasure(+b.dataset.i); }; });
+  var r = $("brange"); r.oninput = function(){ $("bval").textContent = r.value; };
+  r.onchange = function(){ if (+r.value !== P.budget) emit({type:"budget", value:+r.value}, "Re-planning for PKR " + r.value + " m", "Qiskit is running QAOA on the simulator"); };
+}
+function refreshPlan(){ var sc = $("panel").scrollTop; renderPanel(); $("panel").scrollTop = sc; renderTracker(); setView("plan"); }
+function toggleMeasure(i){
+  if (!C.plan) return; var pl = C.plan;
+  if (planMode !== "mine"){ planMode = "mine"; mine = recommended().slice(); toast("You are now building your own plan, starting from the Qiskit recommendation."); }
+  mine[i] = mine[i] ? 0 : 1;
+  if (mine[i]){
+    pl.dependencies.forEach(function(d){ if (d[0] === i && !mine[d[1]]){ mine[d[1]] = 1; toast(pl.measures[d[1]].short + " was added, because it must come first."); } });
+    pl.exclusions.forEach(function(e){ var o = e[0] === i ? e[1] : e[1] === i ? e[0] : -1; if (o >= 0 && mine[o]){ mine[o] = 0; toast(pl.measures[o].short + " was removed, because the two cannot be combined."); } });
+  } else pl.dependencies.forEach(function(d){ if (d[1] === i && mine[d[0]]){ mine[d[0]] = 0; toast(pl.measures[d[0]].short + " was removed, because it depends on this."); } });
+  if (step < 4) go(4); else refreshPlan();
+}
+
+// ---------------------------------------------------------------- misc
+var toastT = 0;
+function toast(msg){ var t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(function(){ t.classList.remove("show"); }, 3400); }
+function showPending(msg, sub){ $("pendmsg").textContent = msg || "Working"; $("pendsub").textContent = sub || ""; $("pending").classList.add("show"); }
+function hidePending(){ $("pending").classList.remove("show"); }
+document.querySelectorAll("#modeseg button").forEach(function(b){ b.onclick = function(){ if (b.dataset.mode === P.mode) return; goAfterRender = 1;
+  emit({type:"mode", mode:b.dataset.mode, event_id: P.event_id || (P.events[0] && P.events[0].id)}, b.dataset.mode === "live" ? "Loading the live forecast" : "Loading the replay", "Checking " + P.cities.length + " cities"); }; });
+$("eventsel").onchange = function(){ goAfterRender = 1; emit({type:"mode", mode:"replay", event_id:this.value}, "Loading the replay", "Checking " + P.cities.length + " cities"); };
+$("refresh").onclick = function(){ goAfterRender = 1; emit({type:"refresh"}, "Collecting the latest weather", "Forecasts, ensembles and river flow from Open-Meteo"); };
+document.querySelectorAll("#views button").forEach(function(b){ b.onclick = function(){ if (!b.disabled) setView(b.dataset.v); }; });
+window.addEventListener("resize", function(){ setHeight(); if (lmap) lmap.invalidateSize(); });
+post("streamlit:componentReady", {apiVersion: 1});
+</script>
+</body>
+</html>

@@ -1,0 +1,683 @@
+{
+  "cases": [
+    {
+      "event": "July 2010 super flood - Khyber Pakhtunkhwa",
+      "mode": "replay",
+      "as_of": "2010-07-28",
+      "city": "Nowshera",
+      "kind": "riverine",
+      "driver": "Peak river discharge",
+      "unit": "m3/s",
+      "best": 3068.02,
+      "design": 3382.35,
+      "alert_threshold": 1434.5,
+      "level": "exceptional",
+      "level_label": "Exceptionally high flood",
+      "threat": true,
+      "rain_72h_mm": 176.7,
+      "member_source": "assumed lognormal forecast error, sigma_log = 0.15 (no archived ensemble)",
+      "n_members": 31,
+      "risk": {
+        "estimate": 0.9999999999989999,
+        "exact": 0.9999999999999999,
+        "abs_error": 9.999778782798785e-13,
+        "queries": 2240,
+        "std_error_ideal": 1.9641855032959655e-07,
+        "classical_mc_std_error_same_queries": 6.68153104781061e-07,
+        "qubits": 4,
+        "max_cx": 673,
+        "max_depth": 1337
+      },
+      "model_inflow_cusecs": 950000.0,
+      "flooded_share_of_area": 0.6838194444444444,
+      "damage_no_action_pkr_m": 4637.31228538553,
+      "people_exposed": 54900.55555555556,
+      "budget_pkr_m": 220,
+      "plan": {
+        "exact": [
+          "EMB_TOWN",
+          "BREACH",
+          "EVAC_S",
+          "EWS"
+        ],
+        "exact_score": 2335.931515088386,
+        "greedy_matches": true,
+        "qaoa": [
+          "EMB_TOWN",
+          "BREACH",
+          "EVAC_S",
+          "EWS"
+        ],
+        "qaoa_score": 2335.9315150883854,
+        "qaoa_matches": true,
+        "qaoa_ratio": 0.9999999999999998,
+        "p_opt": 0.007598033611609846,
+        "p_feasible": 0.5026870713901894,
+        "p_find_opt_in_shots": 0.9798600003316849,
+        "qaoa_seconds": 26.0,
+        "circuit": {
+          "qubits": 10,
+          "transpiled_cx": 360,
+          "transpiled_depth": 165,
+          "p": 4
+        },
+        "damage_after_pkr_m": 3718.862668074922,
+        "people_after": 29306.300000000003
+      }
+    },
+    {
+      "event": "July 2010 super flood - Khyber Pakhtunkhwa",
+      "mode": "replay",
+      "as_of": "2010-07-28",
+      "city": "Sukkur",
+      "kind": "riverine",
+      "driver": "Peak river discharge",
+      "unit": "m3/s",
+      "best": 30548.22,
+      "design": 33678.35,
+      "alert_threshold": 16539.8,
+      "level": "exceptional",
+      "level_label": "Exceptionally high flood",
+      "threat": true,
+      "rain_72h_mm": 52.9,
+      "member_source": "assumed lognormal forecast error, sigma_log = 0.15 (no archived ensemble)",
+      "n_members": 31,
+      "risk": {
+        "estimate": 0.9999999999989999,
+        "exact": 1.0,
+        "abs_error": 1.000088900582341e-12,
+        "queries": 2240,
+        "std_error_ideal": 1.9641855032959655e-07,
+        "classical_mc_std_error_same_queries": 6.68153104781061e-07,
+        "qubits": 4,
+        "max_cx": 673,
+        "max_depth": 1337
+      },
+      "model_inflow_cusecs": 950000.0,
+      "flooded_share_of_area": 0.6556944444444445,
+      "damage_no_action_pkr_m": 8355.059258846215,
+      "people_exposed": 73841.11111111112,
+      "budget_pkr_m": 220,
+      "plan": {
+        "exact": [
+          "EMB_TOWN",
+          "BREACH",
+          "EVAC_S",
+          "EWS"
+        ],
+        "exact_score": 3924.664108542159,
+        "greedy_matches": true,
+        "qaoa": [
+          "EMB_TOWN",
+          "BREACH",
+          "EVAC_S",
+          "EWS"
+        ],
+        "qaoa_score": 3924.664108542159,
+        "qaoa_matches": true,
+        "qaoa_ratio": 1.0,
+        "p_opt": 0.005601996919396554,
+        "p_feasible": 0.401131804368907,
+        "p_find_opt_in_shots": 0.9436563898022706,
+        "qaoa_seconds": 24.4,
+        "circuit": {
+          "qubits": 10,
+          "transpiled_cx": 360,
+          "transpiled_depth": 165,
+          "p": 4
+        },
+        "damage_after_pkr_m": 6292.354570304057,
+        "people_after": 38994.99444444445
+      }
+    },
+    {
+      "event": "September 2014 Chenab flood - Punjab",
+      "mode": "replay",
+      "as_of": "2014-09-04",
+      "city": "Jhang (Trimmu)",
+      "kind": "riverine",
+      "driver": "Peak river discharge",
+      "unit": "m3/s",
+      "best": 8278.42,
+      "design": 9126.7,
+      "alert_threshold": 3422.8,
+      "level": "exceptional",
+      "level_label": "Exceptionally high flood",
+      "threat": true,
+      "rain_72h_mm": 5.4,
+      "member_source": "assumed lognormal forecast error, sigma_log = 0.15 (no archived ensemble)",
+      "n_members": 31,
+      "risk": {
+        "estimate": 0.9999999999989999,
+        "exact": 1.0,
+        "abs_error": 1.000088900582341e-12,
+        "queries": 2240,
+        "std_error_ideal": 1.9641855032959655e-07,
+        "classical_mc_std_error_same_queries": 6.68153104781061e-07,
+        "qubits": 4,
+        "max_cx": 673,
+        "max_depth": 1345
+      },
+      "model_inflow_cusecs": 950000.0,
+      "flooded_share_of_area": 0.8495138888888889,
+      "damage_no_action_pkr_m": 7542.478076076004,
+      "people_exposed": 38250.55555555556,
+      "budget_pkr_m": 220,
+      "plan": {
+        "exact": [
+          "BUND_HW",
+          "EVAC_S",
+          "WETLAND",
+          "EWS"
+        ],
+        "exact_score": 3231.8127380035585,
+        "greedy_matches": false,
+        "qaoa": [
+          "BUND_HW",
+          "EVAC_S",
+          "WETLAND",
+          "EWS"
+        ],
+        "qaoa_score": 3231.8127380035585,
+        "qaoa_matches": true,
+        "qaoa_ratio": 1.0,
+        "p_opt": 0.015544300843964574,
+        "p_feasible": 0.5600841516553559,
+        "p_find_opt_in_shots": 0.9996715699497183,
+        "qaoa_seconds": 25.4,
+        "circuit": {
+          "qubits": 10,
+          "transpiled_cx": 360,
+          "transpiled_depth": 165,
+          "p": 4
+        },
+        "damage_after_pkr_m": 5041.673044818008,
+        "people_after": 23534.434722222228
+      }
+    },
+    {
+      "event": "September 2014 Chenab flood - Punjab",
+      "mode": "replay",
+      "as_of": "2014-09-04",
+      "city": "Rawalpindi",
+      "kind": "urban",
+      "driver": "72-hour rainfall",
+      "unit": "mm",
+      "best": 322.09999999999997,
+      "design": 342.8,
+      "alert_threshold": 90.0,
+      "level": "exceptional",
+      "level_label": "Exceptionally high flood",
+      "threat": true,
+      "rain_72h_mm": 322.09999999999997,
+      "member_source": "reanalysis neighbourhood, era5 (25 points within about 20 km)",
+      "n_members": 25,
+      "risk": {
+        "estimate": 0.9999999999989999,
+        "exact": 1.0,
+        "abs_error": 1.000088900582341e-12,
+        "queries": 2240,
+        "std_error_ideal": 1.9641855032959655e-07,
+        "classical_mc_std_error_same_queries": 6.68153104781061e-07,
+        "qubits": 4,
+        "max_cx": 537,
+        "max_depth": 1116
+      },
+      "model_inflow_cusecs": 14820.0,
+      "flooded_share_of_area": 0.6313888888888889,
+      "damage_no_action_pkr_m": 9907.6206612534,
+      "people_exposed": 236812.2222222223,
+      "budget_pkr_m": 220,
+      "plan": {
+        "exact": [
+          "DESILT",
+          "RESETTLE",
+          "MOBILE",
+          "ALERTS",
+          "OUTFALL"
+        ],
+        "exact_score": 4640.505458857139,
+        "greedy_matches": true,
+        "qaoa": [
+          "DESILT",
+          "RESETTLE",
+          "MOBILE",
+          "ALERTS",
+          "OUTFALL"
+        ],
+        "qaoa_score": 4640.505458857138,
+        "qaoa_matches": true,
+        "qaoa_ratio": 0.9999999999999998,
+        "p_opt": 0.0018724676971144719,
+        "p_feasible": 0.3253404976184331,
+        "p_find_opt_in_shots": 0.616954751153432,
+        "qaoa_seconds": 23.2,
+        "circuit": {
+          "qubits": 10,
+          "transpiled_cx": 360,
+          "transpiled_depth": 165,
+          "p": 4
+        },
+        "damage_after_pkr_m": 7963.057569924844,
+        "people_after": 146973.2526666667
+      }
+    },
+    {
+      "event": "July 2022 monsoon cloudburst - Karachi",
+      "mode": "replay",
+      "as_of": "2022-07-23",
+      "city": "Karachi",
+      "kind": "urban",
+      "driver": "72-hour rainfall",
+      "unit": "mm",
+      "best": 227.5,
+      "design": 227.5,
+      "alert_threshold": 90.0,
+      "level": "very_high",
+      "level_label": "Very high flood",
+      "threat": true,
+      "rain_72h_mm": 227.5,
+      "member_source": "reanalysis neighbourhood, era5 + ecmwf_ifs (50 points within about 20 km)",
+      "n_members": 50,
+      "risk": {
+        "estimate": 0.5177462479033067,
+        "exact": 0.52,
+        "abs_error": 0.0022537520966933178,
+        "queries": 2240,
+        "std_error_ideal": 0.003103693231889342,
+        "classical_mc_std_error_same_queries": 0.010555973258234952,
+        "qubits": 4,
+        "max_cx": 673,
+        "max_depth": 1371
+      },
+      "model_inflow_cusecs": 11906.25,
+      "flooded_share_of_area": 0.5918055555555556,
+      "damage_no_action_pkr_m": 6203.916191685186,
+      "people_exposed": 163614.44444444447,
+      "budget_pkr_m": 220,
+      "plan": {
+        "exact": [
+          "DESILT",
+          "RESETTLE",
+          "MOBILE",
+          "ALERTS",
+          "OUTFALL"
+        ],
+        "exact_score": 2909.699556207923,
+        "greedy_matches": true,
+        "qaoa": [
+          "DESILT",
+          "RESETTLE",
+          "MOBILE",
+          "ALERTS",
+          "OUTFALL"
+        ],
+        "qaoa_score": 2909.699556207923,
+        "qaoa_matches": true,
+        "qaoa_ratio": 1.0,
+        "p_opt": 0.030192620954905998,
+        "p_feasible": 0.39734033276503267,
+        "p_find_opt_in_shots": 0.999999847605978,
+        "qaoa_seconds": 28.5,
+        "circuit": {
+          "qubits": 10,
+          "transpiled_cx": 360,
+          "transpiled_depth": 165,
+          "p": 4
+        },
+        "damage_after_pkr_m": 5141.838294263516,
+        "people_after": 101898.27633333334
+      }
+    },
+    {
+      "event": "August 2022 monsoon rains - upper Sindh",
+      "mode": "replay",
+      "as_of": "2022-08-17",
+      "city": "Larkana",
+      "kind": "urban",
+      "driver": "72-hour rainfall",
+      "unit": "mm",
+      "best": 158.8,
+      "design": 195.3,
+      "alert_threshold": 90.0,
+      "level": "very_high",
+      "level_label": "Very high flood",
+      "threat": true,
+      "rain_72h_mm": 158.8,
+      "member_source": "reanalysis neighbourhood, era5 + ecmwf_ifs (50 points within about 20 km)",
+      "n_members": 50,
+      "risk": {
+        "estimate": 0.9999999999989999,
+        "exact": 1.0,
+        "abs_error": 1.000088900582341e-12,
+        "queries": 2240,
+        "std_error_ideal": 1.9641855032959655e-07,
+        "classical_mc_std_error_same_queries": 6.68153104781061e-07,
+        "qubits": 4,
+        "max_cx": 673,
+        "max_depth": 1337
+      },
+      "model_inflow_cusecs": 10698.75,
+      "flooded_share_of_area": 0.2579166666666667,
+      "damage_no_action_pkr_m": 2884.4650583866196,
+      "people_exposed": 68282.22222222225,
+      "budget_pkr_m": 220,
+      "plan": {
+        "exact": [
+          "DESILT",
+          "DISPOSAL",
+          "GENSETS",
+          "ALERTS"
+        ],
+        "exact_score": 1725.244397012669,
+        "greedy_matches": true,
+        "qaoa": [
+          "DESILT",
+          "DISPOSAL",
+          "GENSETS",
+          "ALERTS"
+        ],
+        "qaoa_score": 1725.244397012669,
+        "qaoa_matches": true,
+        "qaoa_ratio": 1.0,
+        "p_opt": 0.006093258216893802,
+        "p_feasible": 0.2763531546454047,
+        "p_find_opt_in_shots": 0.956251226893365,
+        "qaoa_seconds": 23.1,
+        "circuit": {
+          "qubits": 10,
+          "transpiled_cx": 360,
+          "transpiled_depth": 165,
+          "p": 4
+        },
+        "damage_after_pkr_m": 1893.7054519253593,
+        "people_after": 46675.05555555558
+      }
+    },
+    {
+      "event": "August 2025 floods - Punjab",
+      "mode": "replay",
+      "as_of": "2025-08-25",
+      "city": "Sialkot (Marala)",
+      "kind": "riverine",
+      "driver": "Peak river discharge",
+      "unit": "m3/s",
+      "best": 3638.15,
+      "design": 4010.95,
+      "alert_threshold": 1911.1,
+      "level": "exceptional",
+      "level_label": "Exceptionally high flood",
+      "threat": true,
+      "rain_72h_mm": 279.99999999999994,
+      "member_source": "assumed lognormal forecast error, sigma_log = 0.15 (no archived ensemble)",
+      "n_members": 31,
+      "risk": {
+        "estimate": 0.9999999999989999,
+        "exact": 0.9999999999999999,
+        "abs_error": 9.999778782798785e-13,
+        "queries": 2240,
+        "std_error_ideal": 1.9641855032959655e-07,
+        "classical_mc_std_error_same_queries": 6.68153104781061e-07,
+        "qubits": 4,
+        "max_cx": 673,
+        "max_depth": 1337
+      },
+      "model_inflow_cusecs": 950000.0,
+      "flooded_share_of_area": 0.8007638888888889,
+      "damage_no_action_pkr_m": 7643.732319517956,
+      "people_exposed": 34474.44444444445,
+      "budget_pkr_m": 220,
+      "plan": {
+        "exact": [
+          "BUND_HW",
+          "EVAC_S",
+          "WETLAND",
+          "EWS"
+        ],
+        "exact_score": 2968.0016789934816,
+        "greedy_matches": true,
+        "qaoa": [
+          "BUND_HW",
+          "EVAC_S",
+          "WETLAND",
+          "EWS"
+        ],
+        "qaoa_score": 2968.0016789934816,
+        "qaoa_matches": true,
+        "qaoa_ratio": 1.0,
+        "p_opt": 0.006949926842030527,
+        "p_feasible": 0.4225151975919261,
+        "p_find_opt_in_shots": 0.9718662488397248,
+        "qaoa_seconds": 29.6,
+        "circuit": {
+          "qubits": 10,
+          "transpiled_cx": 360,
+          "transpiled_depth": 165,
+          "p": 4
+        },
+        "damage_after_pkr_m": 5223.000793346154,
+        "people_after": 23481.297222222227
+      }
+    },
+    {
+      "event": "August 2025 floods - Punjab",
+      "mode": "replay",
+      "as_of": "2025-08-25",
+      "city": "Lahore",
+      "kind": "urban",
+      "driver": "72-hour rainfall",
+      "unit": "mm",
+      "best": 121.19999999999999,
+      "design": 159.1,
+      "alert_threshold": 90.0,
+      "level": "high",
+      "level_label": "High flood",
+      "threat": true,
+      "rain_72h_mm": 121.19999999999999,
+      "member_source": "reanalysis neighbourhood, era5 + ecmwf_ifs (50 points within about 20 km)",
+      "n_members": 50,
+      "risk": {
+        "estimate": 0.8994644041265476,
+        "exact": 0.9,
+        "abs_error": 0.0005355958734524213,
+        "queries": 2240,
+        "std_error_ideal": 0.0018678174139390954,
+        "classical_mc_std_error_same_queries": 0.006338656910463873,
+        "qubits": 4,
+        "max_cx": 435,
+        "max_depth": 912
+      },
+      "model_inflow_cusecs": 9341.25,
+      "flooded_share_of_area": 0.853125,
+      "damage_no_action_pkr_m": 5076.424794530902,
+      "people_exposed": 151807.77777777784,
+      "budget_pkr_m": 220,
+      "plan": {
+        "exact": [
+          "DESILT",
+          "RESETTLE",
+          "MOBILE",
+          "ALERTS",
+          "OUTFALL"
+        ],
+        "exact_score": 3197.2891025797576,
+        "greedy_matches": true,
+        "qaoa": [
+          "DESILT",
+          "RESETTLE",
+          "MOBILE",
+          "ALERTS",
+          "OUTFALL"
+        ],
+        "qaoa_score": 3197.2891025797576,
+        "qaoa_matches": true,
+        "qaoa_ratio": 1.0,
+        "p_opt": 0.002927360654967596,
+        "p_feasible": 0.41396269456766216,
+        "p_find_opt_in_shots": 0.7770943570446669,
+        "qaoa_seconds": 30.2,
+        "circuit": {
+          "qubits": 10,
+          "transpiled_cx": 360,
+          "transpiled_depth": 165,
+          "p": 4
+        },
+        "damage_after_pkr_m": 4056.0333613188986,
+        "people_after": 78123.30566666668
+      }
+    },
+    {
+      "event": "live",
+      "mode": "live",
+      "as_of": "2026-11-12",
+      "city": "Rawalpindi",
+      "kind": "urban",
+      "driver": "72-hour rainfall",
+      "unit": "mm",
+      "best": 79.80000000000001,
+      "design": 79.80000000000001,
+      "alert_threshold": 90.0,
+      "level": "watch",
+      "level_label": "Watch",
+      "threat": false,
+      "rain_72h_mm": 79.80000000000001,
+      "member_source": "GEFS ensemble (31 members)",
+      "n_members": 31,
+      "risk": {
+        "estimate": 9.999999999996666e-13,
+        "exact": 0.0,
+        "abs_error": 9.999999999996666e-13,
+        "queries": 2240,
+        "std_error_ideal": 1.9641855032959655e-07,
+        "classical_mc_std_error_same_queries": 6.68153104781061e-07,
+        "qubits": 4,
+        "max_cx": 350,
+        "max_depth": 670
+      },
+      "model_inflow_cusecs": 5490.0,
+      "flooded_share_of_area": 0.3634722222222222,
+      "damage_no_action_pkr_m": 1213.9267883997263,
+      "people_exposed": 0.0,
+      "budget_pkr_m": 220,
+      "plan": {
+        "exact": [
+          "DISPOSAL",
+          "GENSETS",
+          "MOBILE",
+          "ALERTS",
+          "OUTFALL"
+        ],
+        "exact_score": 397.78448821480373,
+        "greedy_matches": false,
+        "qaoa": [
+          "DISPOSAL",
+          "GENSETS",
+          "MOBILE",
+          "ALERTS",
+          "OUTFALL"
+        ],
+        "qaoa_score": 397.78448821480373,
+        "qaoa_matches": true,
+        "qaoa_ratio": 1.0,
+        "p_opt": 0.010380173089860681,
+        "p_feasible": 0.4848529574354751,
+        "p_find_opt_in_shots": 0.9952157427352423,
+        "qaoa_seconds": 30.1,
+        "circuit": {
+          "qubits": 10,
+          "transpiled_cx": 360,
+          "transpiled_depth": 165,
+          "p": 4
+        },
+        "damage_after_pkr_m": 824.8263427711686,
+        "people_after": 0.0
+      }
+    }
+  ],
+  "qae_benchmark": {
+    "case": "Karachi, July 2022 replay: P(72-hour rain >= 90 mm)",
+    "exact": 0.52,
+    "n_members": 50,
+    "bins": 8,
+    "n_seeds": 40,
+    "shots_per_circuit": 64,
+    "rows": [
+      {
+        "powers": [
+          0
+        ],
+        "queries": 64,
+        "max_cx": 33,
+        "qae_mean_abs_error": 0.05048396189552853,
+        "qae_noisy_mean_abs_error": 0.05653761863113525,
+        "classical_mc_mean_abs_error": 0.0474375
+      },
+      {
+        "powers": [
+          0,
+          1
+        ],
+        "queries": 256,
+        "max_cx": 113,
+        "qae_mean_abs_error": 0.011605438939513421,
+        "qae_noisy_mean_abs_error": 0.017455720332802613,
+        "classical_mc_mean_abs_error": 0.030050781250000002
+      },
+      {
+        "powers": [
+          0,
+          1,
+          2
+        ],
+        "queries": 576,
+        "max_cx": 193,
+        "qae_mean_abs_error": 0.007089186156462865,
+        "qae_noisy_mean_abs_error": 0.016021060758363327,
+        "classical_mc_mean_abs_error": 0.018140624999999994
+      },
+      {
+        "powers": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "queries": 1152,
+        "max_cx": 353,
+        "qae_mean_abs_error": 0.005805474566823362,
+        "qae_noisy_mean_abs_error": 0.018062941547502712,
+        "classical_mc_mean_abs_error": 0.012059027777777781
+      },
+      {
+        "powers": [
+          0,
+          1,
+          2,
+          4,
+          8
+        ],
+        "queries": 2240,
+        "max_cx": 673,
+        "qae_mean_abs_error": 0.003451972698278541,
+        "qae_noisy_mean_abs_error": 0.019798438194429946,
+        "classical_mc_mean_abs_error": 0.007350446428571437
+      },
+      {
+        "powers": [
+          0,
+          1,
+          2,
+          4,
+          8,
+          16
+        ],
+        "queries": 4352,
+        "max_cx": 1313,
+        "qae_mean_abs_error": 0.002326523074621528,
+        "qae_noisy_mean_abs_error": null,
+        "classical_mc_mean_abs_error": 0.005398437500000006
+      }
+    ],
+    "noise_model": "depolarising 0.1% (1q), 1% (CX), readout 2%; generic, not a specific device"
+  }
+}

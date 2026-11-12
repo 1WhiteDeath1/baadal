@@ -1,0 +1,77 @@
+Scenario exceptional: stage 4.67 m, baseline damage 2577 PKR m, people exposed 30920; unbalanced lambdas (75.21391179747565, 105.2994765164659) (ground state = optimum at 6/6 budgets)
+  Budget 100 PKR m
+    exact      ['BREACH', 'EVAC_S', 'EWS'] score 890  | greedy 890
+    unbalanced q=10 p=4 Popt=0.0119 Pfeas=0.350 found=True plan=['BREACH', 'EVAC_S', 'EWS'] (25s)
+    slack      q=13 p=3 Popt=0.0106 Pfeas=0.625 found=True plan=['BREACH', 'EVAC_S', 'EWS'] (41s)
+    noise p=1 ideal Popt=0.0015 Pfeas=0.029
+    noise p=1 noisy Popt=0.0015 Pfeas=0.031
+    noise p=2 ideal Popt=0.0132 Pfeas=0.347
+    noise p=2 noisy Popt=0.0090 Pfeas=0.181
+  Budget 160 PKR m
+    exact      ['BREACH', 'EVAC_S', 'PUMPS', 'GENSETS', 'EWS'] score 1146  | greedy 1146
+    unbalanced q=10 p=4 Popt=0.0011 Pfeas=0.559 found=False plan=['EMB_TOWN', 'EWS'] (28s)
+    slack      q=14 p=3 Popt=0.0002 Pfeas=0.722 found=False plan=['EMB_TOWN', 'GENSETS', 'EWS'] (59s)
+    noise p=1 ideal Popt=0.0127 Pfeas=0.093
+    noise p=1 noisy Popt=0.0061 Pfeas=0.080
+    noise p=2 ideal Popt=0.0657 Pfeas=0.384
+    noise p=2 noisy Popt=0.0168 Pfeas=0.224
+  Budget 220 PKR m
+    exact      ['EMB_TOWN', 'BREACH', 'EVAC_S', 'EWS'] score 1488  | greedy 1488
+    unbalanced q=10 p=4 Popt=0.0096 Pfeas=0.579 found=True plan=['EMB_TOWN', 'BREACH', 'EVAC_S', 'EWS'] (40s)
+    slack      q=14 p=3 Popt=0.0034 Pfeas=0.578 found=True plan=['EMB_TOWN', 'BREACH', 'EVAC_S', 'EWS'] (66s)
+    noise p=1 ideal Popt=0.0010 Pfeas=0.182
+    noise p=1 noisy Popt=0.0010 Pfeas=0.192
+    noise p=2 ideal Popt=0.0051 Pfeas=0.403
+    noise p=2 noisy Popt=0.0012 Pfeas=0.320
+  Budget 280 PKR m
+    exact      ['EMB_TOWN', 'BREACH', 'EVAC_S', 'PUMPS', 'GENSETS', 'EWS'] score 1702  | greedy 1702
+    unbalanced q=10 p=4 Popt=0.0042 Pfeas=0.593 found=False plan=['EMB_TOWN', 'SPURS', 'BREACH', 'EVAC_S', 'EWS'] (37s)
+    slack      q=14 p=3 Popt=0.0028 Pfeas=0.550 found=True plan=['EMB_TOWN', 'BREACH', 'EVAC_S', 'PUMPS', 'GENSETS', 'EWS'] (75s)
+    noise p=1 ideal Popt=0.0017 Pfeas=0.194
+    noise p=1 noisy Popt=0.0012 Pfeas=0.243
+    noise p=2 ideal Popt=0.0042 Pfeas=0.392
+    noise p=2 noisy Popt=0.0024 Pfeas=0.369
+  Budget 340 PKR m
+    exact      ['EMB_TOWN', 'SPURS', 'BREACH', 'EVAC_S', 'PUMPS', 'GENSETS', 'EWS'] score 1910  | greedy 1910
+    unbalanced q=10 p=4 Popt=0.0049 Pfeas=0.477 found=True plan=['EMB_TOWN', 'SPURS', 'BREACH', 'EVAC_S', 'PUMPS', 'GENSETS', 'EWS'] (38s)
+    slack      q=15 p=3 Popt=0.0011 Pfeas=0.517 found=True plan=['EMB_TOWN', 'SPURS', 'BREACH', 'EVAC_S', 'PUMPS', 'GENSETS', 'EWS'] (85s)
+    noise p=1 ideal Popt=0.0005 Pfeas=0.553
+    noise p=1 noisy Popt=0.0010 Pfeas=0.517
+    noise p=2 ideal Popt=0.0012 Pfeas=0.542
+    noise p=2 noisy Popt=0.0017 Pfeas=0.486
+  Budget 400 PKR m
+    exact      ['EMB_TOWN', 'SPURS', 'BUND_HW', 'BREACH', 'EVAC_S', 'PUMPS', 'EWS'] score 1982  | greedy 1982
+    unbalanced q=10 p=4 Popt=0.0089 Pfeas=0.390 found=True plan=['EMB_TOWN', 'SPURS', 'BUND_HW', 'BREACH', 'EVAC_S', 'PUMPS', 'EWS'] (38s)
+    slack      q=15 p=3 Popt=0.0007 Pfeas=0.593 found=False plan=['EMB_TOWN', 'SPURS', 'BREACH', 'EVAC_S', 'PUMPS', 'WETLAND', 'EWS'] (107s)
+    noise p=1 ideal Popt=0.0010 Pfeas=0.559
+    noise p=1 noisy Popt=0.0012 Pfeas=0.556
+    noise p=2 ideal Popt=0.0056 Pfeas=0.470
+    noise p=2 noisy Popt=0.0037 Pfeas=0.501
+Scenario very_high: stage 4.02 m, baseline damage 1297 PKR m, people exposed 24815; unbalanced lambdas (101.0897019008263, 40.43588076033052) (ground state = optimum at 6/6 budgets)
+  Budget 100 PKR m
+    exact      ['PUMPS', 'GENSETS', 'EWS'] score 421  | greedy 421
+    unbalanced q=10 p=4 Popt=0.0478 Pfeas=0.577 found=True plan=['PUMPS', 'GENSETS', 'EWS'] (37s)
+    slack      q=13 p=3 Popt=0.0157 Pfeas=0.617 found=True plan=['PUMPS', 'GENSETS', 'EWS'] (47s)
+  Budget 160 PKR m
+    exact      ['EMB_TOWN', 'EWS'] score 757  | greedy 757
+    unbalanced q=10 p=4 Popt=0.0161 Pfeas=0.598 found=True plan=['EMB_TOWN', 'EWS'] (26s)
+    slack      q=14 p=3 Popt=0.0036 Pfeas=0.473 found=True plan=['EMB_TOWN', 'EWS'] (70s)
+  Budget 220 PKR m
+    exact      ['EMB_TOWN', 'PUMPS', 'GENSETS', 'EWS'] score 942  | greedy 926
+    unbalanced q=10 p=4 Popt=0.0054 Pfeas=0.248 found=True plan=['EMB_TOWN', 'PUMPS', 'GENSETS', 'EWS'] (32s)
+    slack      q=14 p=3 Popt=0.0110 Pfeas=0.540 found=True plan=['EMB_TOWN', 'PUMPS', 'GENSETS', 'EWS'] (74s)
+  Budget 280 PKR m
+    exact      ['EMB_TOWN', 'SPURS', 'PUMPS', 'GENSETS', 'EWS'] score 1108  | greedy 1108
+    unbalanced q=10 p=4 Popt=0.0206 Pfeas=0.525 found=True plan=['EMB_TOWN', 'SPURS', 'PUMPS', 'GENSETS', 'EWS'] (21s)
+    slack      q=14 p=3 Popt=0.0001 Pfeas=0.863 found=False plan=['EMB_TOWN', 'PUMPS', 'GENSETS', 'EWS'] (77s)
+  Budget 340 PKR m
+    exact      ['EMB_TOWN', 'SPURS', 'PUMPS', 'GENSETS', 'WETLAND', 'EWS'] score 1204  | greedy 1204
+    unbalanced q=10 p=4 Popt=0.0037 Pfeas=0.709 found=True plan=['EMB_TOWN', 'SPURS', 'PUMPS', 'GENSETS', 'WETLAND', 'EWS'] (47s)
+    slack      q=15 p=3 Popt=0.0005 Pfeas=0.518 found=False plan=['EMB_TOWN', 'SPURS', 'BREACH', 'EVAC_S', 'PUMPS', 'GENSETS', 'EWS'] (70s)
+  Budget 400 PKR m
+    exact      ['EMB_TOWN', 'SPURS', 'EVAC_S', 'PUMPS', 'GENSETS', 'WETLAND', 'EWS'] score 1245  | greedy 1245
+    unbalanced q=10 p=4 Popt=0.0306 Pfeas=0.458 found=True plan=['EMB_TOWN', 'SPURS', 'EVAC_S', 'PUMPS', 'GENSETS', 'WETLAND', 'EWS'] (46s)
+    slack      q=15 p=3 Popt=0.0006 Pfeas=0.596 found=True plan=['EMB_TOWN', 'SPURS', 'EVAC_S', 'PUMPS', 'GENSETS', 'WETLAND', 'EWS'] (86s)
+Done in 1305s -> F:\PROJECT MAFIA\BAADAL\results\results.json
+
+[exited with code 0]

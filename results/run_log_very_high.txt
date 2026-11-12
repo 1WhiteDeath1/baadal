@@ -1,0 +1,26 @@
+Scenario very_high: stage 4.02 m, baseline damage 1297 PKR m, people exposed 24815; unbalanced lambdas (101.0897019008263, 40.43588076033052) (ground state = optimum at 6/6 budgets)
+  Budget 100 PKR m
+    exact      ['PUMPS', 'GENSETS', 'EWS'] score 421  | greedy 421
+    unbalanced q=10 p=4 Popt=0.0478 Pfeas=0.577 found=True plan=['PUMPS', 'GENSETS', 'EWS'] (42s)
+    slack      q=13 p=3 Popt=0.0157 Pfeas=0.617 found=True plan=['PUMPS', 'GENSETS', 'EWS'] (50s)
+  Budget 160 PKR m
+    exact      ['EMB_TOWN', 'EWS'] score 757  | greedy 757
+    unbalanced q=10 p=4 Popt=0.0323 Pfeas=0.598 found=True plan=['EMB_TOWN', 'EWS'] (33s)
+    slack      q=14 p=3 Popt=0.0044 Pfeas=0.473 found=True plan=['EMB_TOWN', 'EWS'] (73s)
+  Budget 220 PKR m
+    exact      ['EMB_TOWN', 'PUMPS', 'GENSETS', 'EWS'] score 942  | greedy 926
+    unbalanced q=10 p=4 Popt=0.0054 Pfeas=0.248 found=True plan=['EMB_TOWN', 'PUMPS', 'GENSETS', 'EWS'] (27s)
+    slack      q=14 p=3 Popt=0.0110 Pfeas=0.540 found=True plan=['EMB_TOWN', 'PUMPS', 'GENSETS', 'EWS'] (74s)
+  Budget 280 PKR m
+    exact      ['EMB_TOWN', 'SPURS', 'PUMPS', 'GENSETS', 'EWS'] score 1108  | greedy 1108
+    unbalanced q=10 p=4 Popt=0.0206 Pfeas=0.525 found=True plan=['EMB_TOWN', 'SPURS', 'PUMPS', 'GENSETS', 'EWS'] (19s)
+    slack      q=14 p=3 Popt=0.0001 Pfeas=0.863 found=False plan=['EMB_TOWN', 'PUMPS', 'GENSETS', 'EWS'] (75s)
+  Budget 340 PKR m
+    exact      ['EMB_TOWN', 'SPURS', 'PUMPS', 'GENSETS', 'WETLAND', 'EWS'] score 1204  | greedy 1204
+    unbalanced q=10 p=4 Popt=0.0037 Pfeas=0.709 found=True plan=['EMB_TOWN', 'SPURS', 'PUMPS', 'GENSETS', 'WETLAND', 'EWS'] (35s)
+    slack      q=15 p=3 Popt=0.0005 Pfeas=0.518 found=False plan=['EMB_TOWN', 'SPURS', 'BREACH', 'EVAC_S', 'PUMPS', 'GENSETS', 'EWS'] (69s)
+  Budget 400 PKR m
+    exact      ['EMB_TOWN', 'SPURS', 'EVAC_S', 'PUMPS', 'GENSETS', 'WETLAND', 'EWS'] score 1245  | greedy 1245
+    unbalanced q=10 p=4 Popt=0.0306 Pfeas=0.458 found=True plan=['EMB_TOWN', 'SPURS', 'EVAC_S', 'PUMPS', 'GENSETS', 'WETLAND', 'EWS'] (46s)
+    slack      q=15 p=3 Popt=0.0006 Pfeas=0.596 found=True plan=['EMB_TOWN', 'SPURS', 'EVAC_S', 'PUMPS', 'GENSETS', 'WETLAND', 'EWS'] (87s)
+Done in 639s -> results\results_very_high.json

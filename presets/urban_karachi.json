@@ -1,0 +1,93 @@
+{
+  "id": "urban_karachi",
+  "name": "Urban pluvial flood - Karachi-style city catchment",
+  "description": "A synthetic 10 km x 10 km city catchment drained by one large storm-water nullah, inspired by Karachi's monsoon urban flooding (choked nullahs, encroachments, disposal/pumping stations, power cuts). ALL NUMBERS ARE ILLUSTRATIVE, not calibrated to any real site.",
+  "currency": "PKR million",
+  "cost_unit_pkr_m": 20,
+  "people_weight_pkr_m_per_person": 0.03,
+  "budgets_pkr_m": [100, 160, 220, 280, 340, 400],
+  "default_scenario": "extreme",
+
+  "terrain": {
+    "rows": 40, "cols": 40, "cell_m": 250, "seed": 11,
+    "base_elev_m": 12.0,
+    "downstream_slope_m_per_cell": 0.04,
+    "lateral_slope_m_per_cell": 0.10,
+    "river_col": 18.0,
+    "meander_amp_cells": 1.5,
+    "meander_period_cells": 22.0,
+    "channel_halfwidth_cells": 0,
+    "channel_depth_m": 2.5,
+    "noise_amp_m": 0.5,
+    "noise_smooth_cells": 2.0
+  },
+
+  "rating_curve": {
+    "comment": "Water level in the main nullah above its bed: h = a * (Q / q_ref)^b. Illustrative.",
+    "a_m": 1.0, "b": 0.6, "q_ref_cusecs": 4000
+  },
+
+  "scenarios": [
+    {"id": "heavy",   "name": "Heavy monsoon spell (forecast)",      "peak_inflow_cusecs": 6000,  "rain_72h_mm": 90},
+    {"id": "very_heavy", "name": "Very heavy monsoon spell (forecast)", "peak_inflow_cusecs": 9000,  "rain_72h_mm": 150},
+    {"id": "extreme", "name": "Extreme urban flood (forecast)",      "peak_inflow_cusecs": 12000, "rain_72h_mm": 230}
+  ],
+
+  "zones": [
+    {"id": "informal",   "name": "Low-lying informal settlement",  "rect": [6, 14, 19, 27],  "landuse": "residential",    "asset_pkr_m_per_cell": 5,  "people_per_cell": 600, "mound_m": -0.3, "drain_capacity_mm": 40, "pluvial_factor": 2.5},
+    {"id": "oldcity",    "name": "Old city commercial centre",     "rect": [16, 24, 6, 15],  "landuse": "infrastructure", "asset_pkr_m_per_cell": 40, "people_per_cell": 150, "mound_m": 0.2,  "drain_capacity_mm": 60, "pluvial_factor": 3.0},
+    {"id": "residential","name": "Dense residential blocks",       "rect": [26, 35, 20, 31], "landuse": "residential",    "asset_pkr_m_per_cell": 15, "people_per_cell": 350, "mound_m": 0.3,  "drain_capacity_mm": 60, "pluvial_factor": 2.0},
+    {"id": "industrial", "name": "Industrial area",                "rect": [3, 12, 4, 13],   "landuse": "infrastructure", "asset_pkr_m_per_cell": 30, "people_per_cell": 40,  "mound_m": 0.5,  "drain_capacity_mm": 70, "pluvial_factor": 1.5},
+    {"id": "underpass",  "name": "Underpasses and arterial roads", "rect": [27, 31, 5, 16],  "landuse": "infrastructure", "asset_pkr_m_per_cell": 20, "people_per_cell": 30,  "mound_m": -0.6, "drain_capacity_mm": 50, "pluvial_factor": 4.0}
+  ],
+
+  "interventions": [
+    {"id": "DESILT",    "name": "Desilt and de-garbage main nullah",               "category": "Drainage maintenance", "cost_pkr_m": 60, "location": [14, 18],
+     "damage_reduction": {"informal": 0.25, "oldcity": 0.10, "residential": 0.10}, "people_reduction": {"informal": 0.20},
+     "description": "Pre-monsoon removal of silt and solid waste from the main storm-water nullah (KMC/DMC-style drive)."},
+    {"id": "ENCROACH",  "name": "Remove encroachments on nullah banks",           "category": "Regulatory (River/nullah right-of-way)", "cost_pkr_m": 60, "location": [10, 18],
+     "damage_reduction": {"informal": 0.15, "oldcity": 0.08, "residential": 0.08}, "people_reduction": {"informal": 0.10},
+     "description": "Clear structures that narrow the nullah. Requires resettlement of affected households first."},
+    {"id": "RESETTLE",  "name": "Resettle households from nullah banks",          "category": "Social (resettlement)", "cost_pkr_m": 60, "location": [8, 23],
+     "damage_reduction": {"informal": 0.10}, "people_reduction": {"informal": 0.30},
+     "description": "Fair compensation and relocation for families living on the nullah banks."},
+    {"id": "DISPOSAL",  "name": "Upgrade disposal / pumping station",             "category": "Urban drainage (WASA-style)", "cost_pkr_m": 100, "location": [22, 10],
+     "damage_reduction": {"oldcity": 0.25, "underpass": 0.20}, "people_reduction": {"oldcity": 0.10},
+     "description": "Higher-capacity pumps at the disposal station draining the old city and underpasses."},
+    {"id": "GENSETS",   "name": "Standby generators and fuel at pumping stations", "category": "Urban drainage", "cost_pkr_m": 20, "location": [23, 8],
+     "damage_reduction": {}, "people_reduction": {},
+     "description": "No benefit on its own; keeps disposal stations running when the grid trips during rain."},
+    {"id": "MOBILE",    "name": "Mobile dewatering pumps for underpasses",        "category": "Urban drainage", "cost_pkr_m": 40, "location": [29, 10],
+     "damage_reduction": {"underpass": 0.30}, "people_reduction": {"underpass": 0.20},
+     "description": "Truck-mounted pumps pre-positioned at known flooding underpasses."},
+    {"id": "TANK",      "name": "Underground storm-water storage tank",           "category": "Structural (storage)", "cost_pkr_m": 120, "location": [20, 12],
+     "damage_reduction": {"oldcity": 0.25, "underpass": 0.15}, "people_reduction": {"oldcity": 0.10},
+     "description": "Store peak runoff under the old city and release it after the storm."},
+    {"id": "GREEN",     "name": "Rain gardens and permeable surfaces",            "category": "Nature-based", "cost_pkr_m": 80, "location": [31, 26],
+     "damage_reduction": {"residential": 0.15, "informal": 0.05, "oldcity": 0.05}, "people_reduction": {"residential": 0.05},
+     "description": "Reduce runoff at source in residential blocks and parks."},
+    {"id": "ALERTS",    "name": "Urban flood alerts and road closures",          "category": "Non-structural (early warning)", "cost_pkr_m": 20, "location": [18, 30],
+     "damage_reduction": {"underpass": 0.10, "informal": 0.03}, "people_reduction": {"informal": 0.25, "underpass": 0.40, "residential": 0.15, "oldcity": 0.10},
+     "description": "PMD-linked SMS alerts, traffic diversions and electrocution-risk warnings."},
+    {"id": "OUTFALL",   "name": "Clear nullah outfall to the sea / main drain",   "category": "Drainage maintenance", "cost_pkr_m": 40, "location": [37, 19],
+     "damage_reduction": {"residential": 0.15, "informal": 0.08, "oldcity": 0.05}, "people_reduction": {"residential": 0.08},
+     "description": "Remove the downstream choke point so upstream drains can empty."}
+  ],
+
+  "synergies": [
+    {"pair": ["DESILT", "ENCROACH"], "zone": "informal", "damage_extra": 0.10, "people_extra": 0.05,
+     "reason": "A desilted nullah only carries full flow if its banks are not encroached."},
+    {"pair": ["DISPOSAL", "GENSETS"], "zone": "oldcity", "damage_extra": 0.12, "people_extra": 0.05,
+     "reason": "Disposal stations stop when the grid trips unless generators and fuel are on site."},
+    {"pair": ["DESILT", "OUTFALL"], "zone": "residential", "damage_extra": 0.06, "people_extra": 0.03,
+     "reason": "Cleaning upstream only helps if the outfall can take the water away."}
+  ],
+
+  "exclusions": [
+    {"pair": ["TANK", "GREEN"], "reason": "Illustrative: both compete for the same municipal land and construction window this season."}
+  ],
+
+  "dependencies": [
+    {"if": "ENCROACH", "requires": "RESETTLE", "reason": "No demolition of homes without prior compensation and resettlement."}
+  ]
+}

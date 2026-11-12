@@ -1,0 +1,12 @@
+# Tested with Python 3.14.6 on Windows 10. Python 3.11+ should work.
+qiskit==2.6.2
+qiskit-aer==0.18.2
+numpy==2.5.4
+scipy==1.18.1
+matplotlib==3.11.2
+plotly==7.1.0
+pandas==3.1.1
+streamlit==1.67.0
+python-docx==1.2.0
+pytest==9.2.0
+pillow==13.0.0

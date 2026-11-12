@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.streamlit/secrets.toml
+results/results_quick.json
+# organisers' brief - not ours to redistribute
+Qiskit_Hackathon_Optimization.docx
+~$*.docx
+.claude/
+results/run_log.txt
+data/warm_log.txt
+results/case_studies_log.txt
+data/geodata_log.txt
