@@ -7,7 +7,7 @@ Slides needed: (1) title, (2) `docs/figures/architecture.png`, (3) `docs/figures
 ---
 
 **0:00-0:20 | Problem (title slide)**
-> In 2010 and 2022, floods put a large part of Pakistan under water. When a forecast arrives, flood managers have days to decide: how serious is it, how likely is it, and what should we fund with a limited budget? We built Baadal, which means "cloud", to answer those three questions in one tool.
+> In 2010 and 2022, floods put a large part of Pakistan under water. When a forecast arrives, flood managers must decide fast: how serious is it, how likely, and what to fund with a limited budget? Baadal, meaning "cloud", answers all three.
 
 **0:20-0:45 | What it is, and the honest framing (architecture slide)**
 > Baadal collects real weather and river forecasts for twelve Pakistani cities, detects threats, models the flood on real satellite terrain, and recommends a response. Quantum computing does two real jobs in this chain. Quantum amplitude estimation calculates the flood risk, and that risk decides whether a threat is raised. QAOA chooses the response plan that the app recommends. Both are built from scratch in Qiskit, and every quantum answer is checked against an exact classical one.
@@ -19,10 +19,10 @@ Slides needed: (1) title, (2) `docs/figures/architecture.png`, (3) `docs/figures
 > The Indus at Sukkur peaked at 1.8 times the flow where flooding starts. The flood chance comes from quantum amplitude estimation over the forecast scenarios, and it matches the exact answer.
 
 **1:25-1:40 | Step 3, see impact (click See the impact, pause while the water spreads)**
-> If nothing is done, this is where the water goes, following the real ground. The panel totals damage and people at risk by area. The cost figures are illustrative.
+> If nothing is done, the water follows the real ground. The panel totals damage and people at risk. Cost figures are illustrative.
 
-**1:40-2:15 | Steps 4 and 5, plan and review**
-> Now the response. Each protective measure is one qubit. Their interactions, like a breach that is only allowed after evacuation, become a QUBO, and QAOA picks the plan within budget. Here it is the best of all 1,024 possible plans, which we confirm classically. Planners can also build their own plan: add stone spurs, and Baadal warns that it is over budget.
+**1:40-2:15 | Steps 4 and 5, plan and review (point at the measure list while naming the Pakistani measures)**
+> Now the response. The options come from Pakistan's own flood practice: Federal Flood Commission embankments and stone spurs, the designated dyke breaches used on the Chenab in 2025, WASA-style pumps, Recharge Pakistan wetlands, and for cities like Karachi, nullah desilting and encroachment removal. Each measure is one qubit. Their interactions, like a breach that is only allowed after evacuation, become a QUBO, and QAOA picks the plan within budget. Here it is the best of all 1,024 possible plans, which we confirm classically. Planners can also build their own plan: add stone spurs, and Baadal warns that it is over budget.
 
 **2:15-2:45 | Results and limits (results slide: QAE graph)**
 > Here is what the quantum steps achieved. Our quantum risk estimate reached the same accuracy as classical sampling with about four and a half times fewer samples: the quadratic speed-up that theory predicts, shown on our own flood data. And QAOA found the best response plan in all nine real flood cases we replayed.
