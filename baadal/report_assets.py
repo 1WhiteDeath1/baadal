@@ -234,6 +234,22 @@ def fig_qae_benchmark(cs):
     ax.set_ylabel("mean absolute error")
     ax.set_title(f"Risk estimate error, {b['case']}\nexact value {b['exact']:.3f}, mean over {b['n_seeds']} seeds", fontsize=9)
     ax.grid(True, which="both", alpha=0.3)
+    # Annotation: equal accuracy, read straight off the chart (QAE at 576 queries vs classical at 2,240)
+    rq = next(r for r in b["rows"] if r["powers"][-1] == 2)
+    rc = next(r for r in b["rows"] if r["powers"][-1] == 8)
+    y = rq["qae_mean_abs_error"]
+    ax.plot([rq["queries"], rc["queries"]], [y, y], color="#111827", lw=1.2, ls="--", zorder=1)
+    ax.plot([rq["queries"]], [y], "o", ms=11, mfc="none", mec="#111827", mew=1.6)
+    ax.plot([rc["queries"]], [rc["classical_mc_mean_abs_error"]], "s", ms=12, mfc="none", mec="#111827", mew=1.6)
+    ax.annotate(f"same accuracy (~{100 * y:.1f}% error):\nQAE {rq['queries']:,} vs classical {rc['queries']:,} queries\n"
+                f"= about {rc['queries'] / rq['queries']:.1f}x fewer samples",
+                xy=(rq["queries"] * 1.6, y), xytext=(rq["queries"] * 0.13, y * 0.42), fontsize=8, weight="bold",
+                arrowprops=dict(arrowstyle="->", color="#111827", lw=1))
+    gain = (rc["classical_mc_mean_abs_error"] / rc["qae_mean_abs_error"]) ** 2
+    ax.text(0.5, -0.24, f"at {rc['queries']:,} queries: classical would need ~{gain:.1f}x more samples to match QAE\n"
+            "ideal simulator; with noise (orange) the gain disappears",
+            transform=ax.transAxes, ha="center", va="top", fontsize=7.5, color="#374151",
+            bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="#d1d5db"))
     ax.legend(fontsize=8)
     _save(fig, "fig_qae_benchmark.png")
 
